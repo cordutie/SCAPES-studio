@@ -1,0 +1,32 @@
+# SCAPES Studio: what it needs on top of the model code. SCAPES and the codec wrappers come from GitHub (pinned); to work on them at the
+# same time, clone them as folders next to this one instead (studio/scapes_path.py finds a folder SCAPES/ there, or SCAPES_PATH).
+# No CLAP model: the embeddings come from each model's atlas. No jax needed unless you play SpectroStream models (the jax lines below).
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.10.0+cu128
+torchaudio==2.10.0+cu128
+scapes[atlas] @ git+https://github.com/cordutie/SCAPES@v0.1.0
+audio-codec-wrappers @ git+https://github.com/cordutie/audio_codec_wrappers@cd2f8f6
+torchdiffeq==0.2.5
+numpy>=2.0,<2.5
+scipy>=1.2
+librosa>=0.10.2
+soundfile>=0.12.1
+matplotlib>=3.5
+tqdm
+ipython==9.11.0
+einops==0.8.2
+encodec==0.1.1
+music2latent==0.1.8
+# the pages and the audio stream
+gradio==6.31.0
+websockets
+huggingface_hub
+# SpectroStream (jax); magenta-rt has dependencies that are not needed: pip install --no-deps magenta-rt==2.0.3
+jax[cuda12]==0.10.1
+jaxlib==0.10.1
+flax==0.12.7
+jaxtyping==0.3.10
+typeguard==2.13.3
+recurrentgemma[jax]==1.0.1
+orbax-checkpoint==0.12.7
+safetensors==0.8.0

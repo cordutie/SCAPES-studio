@@ -1,0 +1,147 @@
+/* The look of the page: black, gray and orange. Change the variables to change the page; the canvases read them too. */
+/* Gradio's own page: the page colour, and no "Use via API / Built with Gradio / Settings" line at the bottom */
+body, .gradio-container, .main, .wrap, .block, .html-container { background: #141414 !important; }
+footer { display: none !important; }
+body { margin: 0; }
+.gradio-container .main, .gradio-container .fillable { padding: 0 !important; }      /* no margins around the demo: it fits a 1080p screen better */
+.gradio-container .prose, .gradio-container .html-container { padding: 0 !important; margin: 0 !important; }
+.gradio-container .gap, .gradio-container .column { gap: 0 !important; }
+
+#demo {
+  --bg: #141414;            /* page and canvases */
+  --panel: #232323;         /* the frame of a block, grid lines */
+  --zone: #2a2a2a;          /* filled areas inside canvases */
+  --text: #b0b0b0;
+  --text-strong: #c8c8c8;
+  --line: #8c8c8c;          /* borders of buttons and canvases */
+  --accent: #ff7a1a;        /* orange: what is on, the point you move */
+  --accent-soft: rgba(255, 122, 26, 0.6);
+  --accent-faint: rgba(255, 122, 26, 0.5);
+  --off: #5a5a5a;           /* a switched-off effect */
+  --grip-display: block;    /* the grip at the top right of an effect; none: no hint that it can be dragged (it still can) */
+  --knob-track: #3a3a3a;    /* the ring of a knob */
+  --log-bg: #000;           /* the log of the model panel */
+  --log-text: #fff;
+  --font: sans-serif;
+
+  --canvas: 480px;          /* the square inside a block: set from CANVAS in theme.js */
+  --frame-w: calc(var(--canvas) + 16px);   /* a block */
+  --frame-h: calc(var(--canvas) + 46px);
+  --gap: 8px;
+  --page-w: calc(3 * var(--frame-w) + 2 * var(--gap) + 8px);
+
+  --light-ok: #4cc46a;      /* the light of the Generation block */
+  --light-warn: var(--accent);
+  --light-late: #e5382b;
+  --light-off: #3a3a3a;
+}
+
+/* ---- page ---- */
+#demo { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; width: var(--page-w);
+        margin: 0 auto; padding: 4px; box-sizing: border-box; position: relative; }
+#demo .grid { display: grid; grid-template-columns: repeat(3, var(--frame-w)); gap: var(--gap); }
+#demo .frame { position: relative; background: var(--panel); padding: 6px; box-sizing: border-box; width: var(--frame-w); height: var(--frame-h);
+               display: flex; flex-direction: column; overflow: hidden; }
+#demo .top { display: flex; align-items: center; gap: 8px; height: 30px; margin-bottom: 4px; flex: none; }
+#demo .panel-title { color: var(--text-strong); font-weight: 700; font-size: 16px; white-space: nowrap; }
+#demo .tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+#demo .info { color: #fff; cursor: default; font-size: 17px; line-height: 1; user-select: none; outline: none; }
+#demo .info:hover, #demo .info:focus { color: var(--accent); }
+#demo .info-tip { display: none; position: fixed; z-index: 20; width: 340px; padding: 8px 12px; background: var(--panel); color: var(--text);
+                  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7); font-size: 15px; line-height: 1.45; font-weight: 400; cursor: default; }
+#demo .info-tip.show { display: block; }
+#demo .info-tip p { margin: 0 0 6px; color: var(--text); opacity: 1; }
+#demo .info-tip p:last-child { margin: 0; }
+#demo canvas { display: block; width: var(--canvas); height: var(--canvas); background: var(--bg); }
+
+/* ---- controls ---- */
+#demo button, #demo input { background: var(--bg); color: var(--text-strong); border: 1px solid var(--line); font: inherit;
+                            font-weight: 600; padding: 3px 10px; }
+#demo input[type=number] { width: 70px; }
+#demo label { color: var(--text-strong); font: inherit; font-weight: 600; }
+#demo button.on { color: var(--accent); border-color: var(--accent); }
+#demo button:disabled { color: var(--off); border-color: var(--off); }
+#demo input[type=range] { accent-color: var(--accent); padding: 0; border: none; background: none; }
+
+/* ---- clusters ---- */
+#demo [data-block=clusters] .blocks { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 54px; gap: 6px; align-content: start; overflow-y: auto; padding-right: 6px; scrollbar-width: thin;
+  scrollbar-color: var(--line) var(--panel); }
+#demo [data-block=clusters] .blocks button { color: var(--bg); border: 3px solid var(--panel); padding: 4px 6px; touch-action: none;
+  user-select: none; height: 54px; width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden; font-size: 15px;
+  font-weight: 700; line-height: 1.15; text-align: center; white-space: normal; overflow-wrap: anywhere; }
+#demo [data-block=clusters] .blocks button.cur { border-color: var(--accent); }
+#demo .ghost { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; box-sizing: border-box;
+               border: 2px solid var(--line); border-radius: 50%; pointer-events: none; }
+
+#demo [data-block=clusters] .blocks input.rename { color: var(--bg); border: 3px solid var(--accent); height: 54px; width: 100%; box-sizing: border-box;
+  min-width: 0; font-size: 15px; font-weight: 700; text-align: center; padding: 4px 6px; }
+
+/* ---- knobs ---- */
+#demo .knob { display: flex; flex-direction: column; align-items: center; gap: 2px; user-select: none; }
+#demo .knob .dial { touch-action: none; cursor: ns-resize; }
+#demo .knob .track { fill: none; stroke: var(--knob-track); stroke-linecap: round; }
+#demo .knob .fill { fill: none; stroke: var(--accent); stroke-linecap: round; }
+#demo .knob .needle { stroke: var(--text-strong); stroke-linecap: round; }
+#demo .knob .defmark { fill: var(--off); }
+#demo .knob.active .needle { stroke: var(--accent); }
+#demo .knob .num, #demo .knob .num-edit { font-size: 13px; color: var(--text-strong); font-weight: 600; cursor: text; min-width: 56px; text-align: center; }
+#demo .knob .num-edit { background: var(--bg); border: 1px solid var(--accent); padding: 0 2px; width: 62px; box-sizing: border-box; }
+#demo .knob .lab { font-size: 12px; color: var(--text); }
+#demo .knob.inline { flex-direction: row; gap: 4px; }
+#demo .knob.inline .num, #demo .knob.inline .num-edit { min-width: 0; width: 52px; text-align: left; }
+
+/* ---- effects ---- */
+#demo [data-block=effects] .cells { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; }
+#demo .fx { background: var(--bg); padding: 6px 8px; display: flex; flex-direction: column; gap: 4px; min-width: 0; min-height: 0; position: relative; }
+#demo .fx.off .knobs, #demo .fx.off .bars { filter: saturate(0.2) brightness(0.7); }
+#demo .fx.dragging { z-index: 20; opacity: 0.85; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6); pointer-events: none; }
+#demo .fx.target { outline: 2px dashed var(--accent); outline-offset: -2px; }
+#demo .fx-head { display: flex; align-items: center; gap: 6px; height: 26px; flex: none; cursor: grab; touch-action: none; }
+#demo .fx-head .title { flex: 1; color: var(--text-strong); font-weight: 700; white-space: nowrap; }
+#demo .fx-head .order { color: var(--accent); font-weight: 700; width: 14px; }
+#demo .fx-head button { padding: 0 6px; height: 24px; line-height: 20px; font-size: 16px; }
+#demo .fx-head .grip { display: var(--grip-display); width: 10px; height: 16px; opacity: 0.45; flex: none;
+  background: radial-gradient(circle, var(--text) 1.2px, transparent 1.6px) 0 0 / 5px 5.5px; }
+#demo .fx-head:hover .grip { opacity: 0.8; }
+#demo .knobs { flex: 1; display: flex; justify-content: space-around; align-items: center; }
+#demo .bars { flex: 1; min-height: 0; display: flex; justify-content: space-between; align-items: stretch; }
+#demo .bars .band { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 25px; font-size: 11px; }
+#demo .bars .band input[type=range] { flex: 1; min-height: 0; writing-mode: vertical-lr; direction: rtl; width: 20px; }
+
+/* ---- model panel ---- */
+#demo .model-btn { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+#demo .menu { position: absolute; top: 80px; left: 8px; z-index: 5; min-width: 320px; max-width: 520px; max-height: 360px; overflow-y: auto;
+              background: var(--bg); border: 1px solid var(--line); scrollbar-width: thin; scrollbar-color: var(--line) var(--bg); }
+#demo .menu[hidden] { display: none; }
+#demo .menu button { display: block; width: 100%; text-align: left; border: none; border-bottom: 1px solid var(--panel); padding: 8px 12px; }
+#demo .menu button.current { color: var(--accent); }
+#demo .menu small { color: var(--text); margin-left: 10px; font-weight: 400; }
+#demo [data-block=generation] .m-top { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; flex: 1; min-height: 0; }
+#demo [data-block=generation] .m-left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+#demo [data-block=generation] .m-knobs { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 6px; }
+#demo [data-block=generation] .m-log { background: var(--log-bg); color: var(--log-text); font-family: monospace; font-size: 12px; padding: 6px 8px;
+  display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+#demo [data-block=generation] .m-log .live { color: var(--log-text); border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 5px; line-height: 1.4; flex: none; }
+#demo [data-block=generation] .m-log .lines { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #555 #000; }
+#demo [data-block=generation] .m-log .lines div { line-height: 1.5; color: var(--log-text); }
+#demo [data-block=generation] .m-log .lines .warn { color: var(--accent); }
+#demo [data-block=generation] .m-bottom { flex: none; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; margin-top: 8px; }
+#demo [data-block=generation] .meter { width: 360px; height: 130px; background: var(--bg); display: block; }
+#demo [data-block=generation] .transport { display: flex; gap: 8px; margin-top: 8px; }
+#demo [data-block=generation] .transport button { flex: 1; height: 44px; font-size: 20px; padding: 0; }
+#demo [data-block=generation] .transport button[data-ref=rec] { color: #e5382b; }
+#demo [data-block=generation] .transport button[data-ref=rec].rec { background: #e5382b; color: var(--bg); border-color: #e5382b; }
+#demo .light { width: 16px; height: 16px; border-radius: 50%; flex: none; background: var(--light-off); }
+#demo .light[data-state=ok] { background: var(--light-ok); box-shadow: 0 0 8px var(--light-ok); }
+#demo .light[data-state=warn] { background: var(--light-warn); box-shadow: 0 0 8px var(--light-warn); }
+#demo .light[data-state=late] { background: var(--light-late); box-shadow: 0 0 10px var(--light-late); }
+#demo [data-block=generation] .m-meter { width: fit-content; }      /* the buttons take exactly the width of the meter */
+#demo [data-block=generation] .m-bottom { grid-template-columns: auto 1fr; }
+#demo [data-block=generation] .m-volume { display: flex; justify-content: center; align-self: center; }     /* centred in the space right of the meter */
+
+/* a page that says something instead of the panels (no models, under construction) */
+#demo .notice { max-width: 640px; margin: 80px auto; padding: 24px 28px; background: var(--panel); line-height: 1.5; }
+#demo .notice h2 { margin: 0 0 12px; color: var(--text-strong); }
+#demo .notice a { color: var(--accent); }
+#demo .notice code { color: var(--text-strong); }

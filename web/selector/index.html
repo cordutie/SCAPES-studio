@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCAPES Studio</title>
+  <link rel="stylesheet" href="/web/shared/theme.css">
+  <link rel="stylesheet" href="/web/selector/selector.css">
+</head>
+<body>
+<div id="demo" class="start" data-on-hf="{{ON_HF}}">
+  <h1>SCAPES Studio</h1>
+  <p class="lead">Two ways to play with SCAPES, a generative model of environmental sounds. Choose a mode.</p>
+  <div class="cards">
+    <a class="card" id="live" href="/live/">
+      <h2>Live</h2>
+      <div class="tag">real time · best run locally</div>
+      <p>Play the model like an instrument. Drop semantic sources on a plane and move a point between them: the sound is generated
+         continuously, a fraction of a second at a time, and follows your hand.</p>
+      <ul>
+        <li>semantic sources, an atlas of the data and two playgrounds (meaning and structure)</li>
+        <li>effects, level meter and a recorder, all in the browser</li>
+        <li>needs a GPU that keeps up with the sound</li>
+      </ul>
+    </a>
+    <a class="card" id="score" href="/score/">
+      <h2>Score</h2>
+      <div class="tag">offline · timeline · under construction</div>
+      <p>Compose with the same sources along a timeline, generate the whole piece at once and listen to it afterwards.
+         It does not need to keep up with real time, so it also works on a shared GPU.</p>
+      <ul>
+        <li>arrange sources over time</li>
+        <li>render, listen, export</li>
+        <li>coming soon</li>
+      </ul>
+    </a>
+  </div>
+  <p class="foot">Code: <a class="link" href="https://github.com/cordutie/SCAPES-studio" target="_blank">SCAPES-studio</a> ·
+     model: <a class="link" href="https://github.com/cordutie/SCAPES" target="_blank">SCAPES</a> ·
+     models: <a class="link" href="https://huggingface.co/cordutie/SCAPES-models" target="_blank">SCAPES-models</a></p>
+
+  <dialog id="warn">
+    <h3>Live mode on a shared GPU</h3>
+    <p>This page is running on Hugging Face. Free Spaces share their GPUs (ZeroGPU): the GPU is lent in short turns with a time limit,
+       and Live mode needs it all the time. Expect the sound to <b>stop suddenly</b>, to stutter, or not to start at all.</p>
+    <p>For Live mode as it is meant to be played, run it on your own machine with an NVIDIA GPU:
+       <a class="link" href="https://github.com/cordutie/SCAPES-studio" target="_blank">instructions</a>.</p>
+    <div class="row"><button id="back">Back</button><button id="go" class="go">Open Live anyway</button></div>
+  </dialog>
+</div>
+<script>
+  // on Hugging Face, Live asks first
+  const root = document.getElementById('demo'), dlg = document.getElementById('warn');
+  document.getElementById('live').addEventListener('click', (e) => {
+    if (root.dataset.onHf !== 'true') return;
+    e.preventDefault(); dlg.showModal();
+  });
+  document.getElementById('back').addEventListener('click', () => dlg.close());
+  document.getElementById('go').addEventListener('click', () => { location.href = '/live/'; });
+</script>
+</body>
+</html>

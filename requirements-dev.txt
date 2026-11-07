@@ -1,0 +1,3 @@
+# dev only: the browser tests (tests/ui_check.py, browser_check.py, model_menu_check.py) and the server tests
+playwright
+pytest
