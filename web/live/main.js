@@ -1,5 +1,5 @@
 // The page. Loads the theme, asks the server for the atlas, makes the player, and mounts the blocks. Each block is one file in
-// blocks/ that exports mount(root, ctx); the list below and web/layout.html are all there is to add, remove or reorder one.
+// blocks/ that exports mount(root, ctx); the list below and web/live/layout.html are all there is to add, remove or reorder one.
 // ctx: {size (canvas side), root, S (state), bus, api (server functions), theme, palette, live, player, plane}
 import {S, bus} from '../shared/core/state.js';
 import {makeApi} from './core/api.js';
