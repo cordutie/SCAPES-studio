@@ -20,8 +20,8 @@ export function mount(root, ctx) {
     lines.scrollTop = lines.scrollHeight;
   };
   const status = () => {
-    const clips = S.clips.length, end = S.clips.reduce((m, c) => Math.max(m, c.start + c.dur), 0);
-    live.textContent = clips ? `${clips} clip${clips > 1 ? 's' : ''} · the piece lasts ${fmt(end)}` : 'no clips yet · drag the point of the playground onto the timeline';
+    const clips = S.clips.length, end = S.clips.reduce((m, c) => Math.max(m, c.start + c.dur), 0) - S.clips.reduce((m, c) => Math.min(m, c.start), Infinity);
+    live.textContent = clips ? `${clips} clip${clips > 1 ? 's' : ''} · the piece lasts ${fmt(end)}` : 'no clips yet · drag a source or a dot onto the timeline';
   };
   bus.on('clips', status); bus.on('boot', () => {
     status();

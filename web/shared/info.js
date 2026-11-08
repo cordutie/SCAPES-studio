@@ -35,26 +35,29 @@ export const INFO = {
   // Score mode
   'Score sources': [
     'The sounds of the model that you can use, grouped by cluster, in the colour of the cluster. Each one is a real moment of the data, with its audio.',
-    'Click one to hear it. Drag one onto the Semantic playground to place it there.',
+    'Click one to hear it. Drag one onto the Semantic playground to place it there, or straight onto the Timeline to make a clip of it.',
   ],
   'Score playground': [
-    'Place several sources as dots, then move the point between them: it stands for the mix of the sources around it, and the lines show how much of each.',
-    'Press and move on the empty area to steer the point, or drag a dot to move it. Double-click a dot to remove it.',
-    'Drag the point itself out of the playground onto the Timeline to make a clip of it, or press + Timeline to add it at the end.',
+    'Place several sources as dots, then move the point between them: it stands for the mix of the sources around it, and the lines show how much of each. It works as in Live.',
+    'Press and move on the empty area to steer the point. Edit (or hold Ctrl) lets you drag the dots. Double-click a dot to remove it; double-click an empty place to make a new dot there: it stands for the mix that was under it.',
+    'Score (or hold Shift) makes every dot, and the point, glow: now you can drag any of them onto the Timeline to make a clip.',
   ],
   'Timeline': [
-    'The piece, from left to right. Each clip is a point of the playground (a mix of sources) that will sound for the length of the clip.',
-    'Drag the point of the playground onto the timeline to add a clip. Drag a clip to move it, drag its right edge to change its length, double-click it to remove it.',
-    'Zoom changes how wide a second is; Length is the length of the piece.',
+    'The piece, from left to right. Each clip is one embedding (a source, or a mix of sources) held for its length; a new clip lasts 3 seconds.',
+    'Drag a source, a dot or the point onto the timeline to add a clip. Drag a clip to move it, drag its right edge to change its length, double-click it to remove it.',
+    'Between two clips the embedding goes from the one to the other across the gap, marked with the symbol (slerp for now; with no gap it is a cut). The scale fits the piece by itself, and generating renders from the first clip to the last.',
   ],
   'Score model': [
     'The model that makes the piece, and what you choose for it. NFE is the number of steps the generator takes for each part of the sound: more steps, better and slower. CFG is how strongly the sound follows the semantics.',
     'The seed makes a piece repeatable: the same score with the same seed makes the same sound. The dice picks a new one.',
     'Generate makes the whole piece in one pass and keeps it in Takes.',
   ],
+  'Score atlas': [
+    'The atlas in 3-D, as in Live. When a take plays, the line is the path it followed through the atlas and the orange dot is where the sound is now.',
+  ],
   'Takes': [
     'What you generated, newest first, each with the settings that made it. They are kept on disk, so they are here the next time too.',
-    'Play one (a second press stops it), download it as a wav, or remove it for good.',
+    'Play one (a second press stops it; the atlas shows its path), download it as a wav, or remove it for good.',
   ],
   'Log': [
     'What the page is doing: the model that loaded and, when you generate, the report of the render. The top line says where the piece stands.',

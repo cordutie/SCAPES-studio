@@ -5,5 +5,8 @@ export function makeApi(server) {
     locate: (state) => server.locate(state),
     takes: () => server.list_takes(0),
     deleteTake: (state) => server.delete_take(state),
+    render: (state) => server.render(state),
+    renderStatus: () => server.render_status(0),
+    trace: (state) => server.take_trace(state),
   };
 }

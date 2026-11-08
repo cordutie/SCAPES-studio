@@ -29,7 +29,7 @@ class Takes:
             except (OSError, ValueError):
                 continue
             if ID.match(str(meta.get("id", ""))) and (self.dir / f"{meta['id']}.wav").exists():
-                out.append(meta)
+                out.append({k: v for k, v in meta.items() if k != "path3"})          # the path is long: see `path`
         return out
 
     # samples [n, channels] float32 at `sr`; meta: model, nfe, cfg, seed, clips. Returns the take
@@ -46,6 +46,15 @@ class Takes:
                     seconds=round(len(samples) / sr, 2), sample_rate=int(sr))
         (self.dir / f"{take_id}.json").write_text(json.dumps(take, indent=1))
         return take
+
+    # where the piece went in the 3-D atlas: {rate (points per second), path3 [[x, y, z], ...]}, or None for a take without it
+    def trace(self, take_id):
+        self.path(take_id)                                  # validates the id
+        try:
+            meta = json.loads((self.dir / f"{take_id}.json").read_text())
+        except (OSError, ValueError):
+            return None
+        return {"rate": meta.get("rate"), "path3": meta.get("path3")} if meta.get("path3") else None
 
     def delete(self, take_id):
         self.path(take_id)                                  # validates the id

@@ -12,15 +12,19 @@ export function mount(root, ctx) {
   const list = ref(root, 'list');
   let audio = null, playing = null;
 
-  function stop() { if (audio) { audio.pause(); audio = null; } playing = null; }
-  function play(take) {
+  function stop() { if (audio) { audio.pause(); audio = null; } playing = null; ctx.atlas.stop(); }
+  // play: the atlas shows the path of the take and follows the sound along it
+  async function play(take) {
     const same = playing === take.id;
     stop();
     if (!same) {
       playing = take.id;
-      audio = new Audio(ctx.takesUrl + take.id + '.wav');
-      audio.addEventListener('ended', () => { playing = null; audio = null; render(); });
-      audio.play().catch(() => {});
+      const a = audio = new Audio(ctx.takesUrl + take.id + '.wav');
+      a.addEventListener('ended', () => { if (audio === a) { playing = null; audio = null; ctx.atlas.stop(); render(); } });
+      a.play().catch(() => {});
+      let trace = null;
+      try { trace = await ctx.api.trace({id: take.id}); } catch (e) { trace = null; }
+      if (audio === a) ctx.atlas.follow(a, trace);
     }
     render();
   }

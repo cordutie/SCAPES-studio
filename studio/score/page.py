@@ -7,6 +7,7 @@ from fastapi import HTTPException
 from fastapi.responses import FileResponse
 
 from studio import config
+from studio.score.generator import Generator
 from studio.score.library import Library
 from studio.score.score_api import SNIPPET, make_functions
 from studio.score.takes import ID, Takes
@@ -23,7 +24,7 @@ def build_page(server_functions):
 
 # Puts the Score mode on `app` at `path` ("/" alone, "/score" in the combined app): the snippets route, then the page (last: Gradio answers
 # everything under its path)
-def mount_score(app, library: Library, path="/", takes: Takes | None = None):
+def mount_score(app, library: Library, path="/", takes: Takes | None = None, generator: Generator | None = None):
     takes = takes or Takes(config.TAKES_DIR)
     prefix = "" if path == "/" else path.rstrip("/")
 
@@ -43,4 +44,4 @@ def mount_score(app, library: Library, path="/", takes: Takes | None = None):
         return FileResponse(takes.path(take_id), media_type="audio/wav", headers={"Cache-Control": "no-store"},
                             filename=f"{take_id}.wav")
 
-    return gr.mount_gradio_app(app, build_page(make_functions(library, takes, prefix)), path=path, ssr_mode=False)
+    return gr.mount_gradio_app(app, build_page(make_functions(library, takes, prefix, generator if generator is not None else Generator(library))), path=path, ssr_mode=False)

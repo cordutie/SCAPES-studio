@@ -1,11 +1,12 @@
-<!-- The grid of the Score page, aimed at 1920 x 1080. Top: the semantic sources (with the takes, a tab in the same place) and the semantic
-     playground. Bottom (about a fifth of the screen): the timeline under the sources, and under the playground the model panel (NFE, CFG,
+<!-- The grid of the Score page, aimed at 1920 x 1080. Top: the semantic sources and the semantic playground (and, in the same
+     places, the takes and the atlas: the other view, a tab of the sources block). Bottom (about a fifth of the screen): the timeline under the sources, and under the playground the model panel (NFE, CFG,
      seed, Generate) and the log. Each block is filled by its own module in web/score/blocks/ (data-block = file name). -->
 <div id="demo" class="score">
   <div class="grid">
     <section class="frame" data-block="sources"></section>
     <section class="frame" data-block="takes"></section>
     <section class="frame" data-block="playground"></section>
+    <section class="frame" data-block="atlas"></section>
     <section class="frame" data-block="timeline"></section>
     <section class="frame" data-block="settings"></section>
     <section class="frame" data-block="log"></section>

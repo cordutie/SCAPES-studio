@@ -1,5 +1,5 @@
 // The semantic sources of the Score page: the representatives of the clusters of the model, grouped by cluster in the colour of the cluster.
-// Click one to hear the audio it comes from; drag one onto the semantic playground to place it there.
+// Click one to hear the audio it comes from; drag one onto the semantic playground to place it there, or onto the timeline to make a clip of it.
 import {bus, ref} from '../../shared/core/state.js';
 import {S} from '../core/state.js';
 import {addTabs} from '../core/tabs.js';
@@ -7,10 +7,8 @@ import {header} from '../../shared/core/ui.js';
 
 export function mount(root, ctx) {
   root.innerHTML = header('Semantic sources', 'Score sources') + `<div class="sources" data-ref="list"></div>`;
-  const tools = ref(root, 'tools');
-  tools.innerHTML = `<span class="readout" data-ref="model" title="the model whose sources these are"></span>`;
-  addTabs(root, tools);
-  const list = ref(root, 'list'), modelName = ref(root, 'model');
+  addTabs(root, ref(root, 'tools'));
+  const list = ref(root, 'list');
 
   // --- the audio of a source: one at a time ---
   let audio = null, playing = null;
@@ -27,7 +25,6 @@ export function mount(root, ctx) {
   ctx.preview = preview;
 
   function build() {
-    modelName.textContent = S.model;
     list.innerHTML = '';
     const byCluster = new Map();
     S.sources.forEach((s, i) => { if (!byCluster.has(s.cluster)) byCluster.set(s.cluster, []); byCluster.get(s.cluster).push(i); });
@@ -40,7 +37,7 @@ export function mount(root, ctx) {
         const b = document.createElement('button');
         b.className = 'src'; b.dataset.i = i; b.textContent = S.sources[i].name;
         b.style.background = ctx.palette[k] || ctx.theme.line;
-        b.title = 'click: hear it · drag onto the playground to place it';
+        b.title = 'click: hear it · drag onto the playground to place it, or onto the timeline to make a clip';
         b.addEventListener('pointerdown', (e) => down(e, i, b));
         b.addEventListener('pointermove', move); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', cancel);
         group.appendChild(b);
@@ -70,17 +67,23 @@ export function mount(root, ctx) {
     }
     const a = ctx.root.getBoundingClientRect();
     bg.ghost.style.left = (e.clientX - a.left) + 'px'; bg.ghost.style.top = (e.clientY - a.top) + 'px';
+    ctx.timeline.hover(e.clientX, e.clientY);
   }
   function up(e) {
     if (!bg || e.pointerId !== bg.id) return;
     const g = bg; bg = null;
     if (g.ghost) g.ghost.remove();
+    ctx.timeline.leave();
     if (!g.moved) { preview(g.i); return; }
+    if (ctx.timeline.over(e.clientX, e.clientY)) {                       // onto the timeline: a clip of this source alone
+      ctx.timeline.dropAt(e.clientX, e.clientY, {comp: [[g.i, 1]]});
+      return;
+    }
     const r = ctx.playground.canvas.getBoundingClientRect();
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
     ctx.playground.place(g.i, ctx.playground.planeRaw(e));
   }
-  function cancel(e) { if (bg && e.pointerId === bg.id) { if (bg.ghost) bg.ghost.remove(); bg = null; } }
+  function cancel(e) { if (bg && e.pointerId === bg.id) { if (bg.ghost) bg.ghost.remove(); bg = null; ctx.timeline.leave(); } }
 
   bus.on('boot', build); bus.on('dots', mark);
 }

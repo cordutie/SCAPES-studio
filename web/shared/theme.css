@@ -167,7 +167,7 @@ body { margin: 0; }
 #demo.score .frame { width: auto; height: auto; min-width: 0; }
 #demo.score [data-block=sources], #demo.score [data-block=takes] { grid-column: 1; grid-row: 1; }      /* the same place: a tab each */
 #demo.score .frame[hidden] { display: none; }
-#demo.score [data-block=playground] { grid-column: 2 / 4; grid-row: 1; }
+#demo.score [data-block=playground], #demo.score [data-block=atlas] { grid-column: 2 / 4; grid-row: 1; }      /* the same place too */
 #demo.score [data-block=timeline] { grid-column: 1; grid-row: 2; }
 #demo.score [data-block=settings] { grid-column: 2; grid-row: 2; }
 #demo.score [data-block=log] { grid-column: 3; grid-row: 2; }
@@ -181,9 +181,9 @@ body { margin: 0; }
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: none; touch-action: none; width: 100%; box-sizing: border-box; }
 #demo.score button.src.placed { border-color: var(--accent); }
 #demo.score button.src.playing { filter: brightness(1.3); }
-#demo.score .tl-scroll { flex: 1 1 auto; min-height: 0; overflow-x: auto; overflow-y: hidden; background: var(--bg); scrollbar-width: thin;
+#demo.score .tl-scroll { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: hidden; background: var(--bg); scrollbar-width: thin;
   scrollbar-color: var(--line) var(--panel); }
-#demo.score .tl-inner { position: relative; height: calc(100% - 2px); min-width: 100%; }
+#demo.score .tl-inner { position: relative; height: calc(100% - 2px); min-width: 100%; overflow: hidden; }
 #demo.score .ruler { position: relative; height: 24px; border-bottom: 1px solid var(--line); }
 #demo.score .tick { position: absolute; top: 0; height: 100%; border-left: 1px solid var(--line); padding-left: 4px; font-size: 12px; line-height: 24px;
   color: var(--text); white-space: nowrap; }
@@ -194,6 +194,10 @@ body { margin: 0; }
 #demo.score .clip .label { position: absolute; left: 6px; top: 6px; right: 12px; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden;
   text-overflow: ellipsis; pointer-events: none; }
 #demo.score .clip .rs { position: absolute; right: 0; top: 0; bottom: 0; width: 8px; cursor: ew-resize; background: rgba(0, 0, 0, 0.3); }
+#demo.score .interp { position: absolute; top: 50%; transform: translate(-50%, -50%); z-index: 2; background: var(--panel); color: var(--accent);
+  border: 1px solid var(--line); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+  line-height: 1; pointer-events: auto; cursor: help; user-select: none; }
+#demo.score .interp.cut { color: var(--text); opacity: 0.8; }
 #demo.score .drop-mark { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--accent); pointer-events: none; z-index: 3; }
 #demo.score .drop-mark[hidden] { display: none; }
 #demo .chip { position: absolute; transform: translate(12px, -12px); z-index: 30; pointer-events: none; background: var(--panel); color: var(--text-strong);
@@ -211,7 +215,7 @@ body { margin: 0; }
 #demo.score [data-block=settings] .set { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
 #demo.score .set-knobs { display: flex; justify-content: space-around; align-items: flex-start; flex: 1; min-height: 0; }
 #demo.score .set-go { display: flex; gap: 6px; }
-#demo.score .set-go input { width: 62px; min-width: 0; box-sizing: border-box; }
+#demo.score .set-go input { width: 96px; min-width: 0; box-sizing: border-box; }
 #demo.score .set-go button { padding: 3px 6px; }
 #demo.score .set-go button.go { flex: 1; font-size: 15px; }
 #demo.score .m-log { flex: 1; min-height: 0; background: var(--log-bg); color: var(--log-text); font-family: monospace; font-size: 12px; padding: 6px 8px;
