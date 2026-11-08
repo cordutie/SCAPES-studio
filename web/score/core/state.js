@@ -4,10 +4,15 @@
 //                              'dots'   a dot was placed, moved or removed in the playground
 //                              'point'  the point of the playground moved (S.point is new)
 //                              'clips'  a clip was added, moved, resized or removed
+//                              'tab'    the top left changed between the sources and the takes
+//                              'takes'  the list of takes changed
 export const S = {
   model: '', names: [], sources: [],      // sources: [{cluster, name, file, start, url}], one per representative of the model
   dots: [],                                // one entry per source: [x, y] on the playground, or null
   c: null,                                 // the point asked for on the playground (the server answers the one in the zone of the dots)
   point: null,                             // the server's answer: {sel: {idx, lam}, c, outline}, or null without dots
+  tab: 'sources',                          // what the top left shows: 'sources' or 'takes'
+  takes: [],                               // what was generated: [{id, name, created, seconds, model, nfe, cfg, seed}], newest first
+  gen: {nfe: 8, cfg: 1.0, seed: 0},        // the settings of the next generation
   clips: [], length: 60, pps: 30,          // the timeline: its clips, its length in seconds and its zoom in pixels per second
 };

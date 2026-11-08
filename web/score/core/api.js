@@ -3,5 +3,7 @@ export function makeApi(server) {
   return {
     boot: (name) => server.boot(name ? {name} : {}),
     locate: (state) => server.locate(state),
+    takes: () => server.list_takes(0),
+    deleteTake: (state) => server.delete_take(state),
   };
 }

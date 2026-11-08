@@ -14,8 +14,7 @@ export function mount(root, ctx) {
   root.innerHTML = header('Timeline') + `<div class="tl-scroll" data-ref="scroll"><div class="tl-inner" data-ref="inner">
     <div class="ruler" data-ref="ruler"></div><div class="tl-track" data-ref="track"><div class="drop-mark" data-ref="mark" hidden></div></div></div></div>`;
   const tools = ref(root, 'tools');
-  tools.innerHTML = `<span class="readout" data-ref="readout"></span><button data-ref="clear" title="remove every clip">Clear</button>
-    <button data-ref="generate" disabled title="generating the piece is the next step">Generate</button>`;
+  tools.innerHTML = `<span class="readout" data-ref="readout"></span><button data-ref="clear" title="remove every clip">Clear</button>`;
   tools.prepend(createKnob({map: linear(8, 120), value: S.pps, def: S.pps, step: 1, size: 26, inline: true, label: 'Zoom',
     format: (v) => v.toFixed(0) + ' px/s', onChange: (v) => { S.pps = v; render(); }}).el);
   tools.prepend(createKnob({map: linear(10, 600), value: S.length, def: S.length, step: 5, size: 26, inline: true, label: 'Length',

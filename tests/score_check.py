@@ -17,12 +17,18 @@ def check(cond, text):
 
 
 tmp = Path(tempfile.mkdtemp())
+sys.path.insert(0, str(root))
+import numpy as np
+from studio.score.takes import Takes
+takes = Takes(tmp / "takes")
+take = takes.add(np.sin(np.linspace(0, 440 * 2 * np.pi, 44100, dtype=np.float32))[:, None] * 0.2, 44100,
+                 {"model": "m1", "nfe": 12, "cfg": 2.5, "seed": 7, "clips": []})
 (tmp / "models").mkdir()
 (tmp / "models" / "m1").symlink_to(real)
 (tmp / "empty").mkdir()
 port = 7886
 srv = subprocess.Popen([sys.executable, str(root / "app_score.py"), "--models-dir", str(tmp / "models"), "--port", str(port)], cwd=root,
-                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=dict(os.environ, SCAPES_STUDIO_TAKES=str(tmp / "takes")))
 srv2 = subprocess.Popen([sys.executable, str(root / "app_score.py"), "--models-dir", str(tmp / "empty"), "--port", str(port + 1)], cwd=root,
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 try:
@@ -42,12 +48,21 @@ try:
         S = lambda expr: pg.evaluate(f"(() => {{ const S = window.__score.S; return ({expr}); }})()")
 
         # the page: three blocks, centred, inside 1920 x 1080
+        pg.wait_for_timeout(800)                       # Gradio is still settling its own padding for a moment after the page loads
         box = pg.locator("#demo").bounding_box()
-        check(all(pg.locator(f"[data-block={n}]").count() == 1 for n in ("sources", "playground", "timeline")), "three blocks: sources, playground, timeline")
+        check(all(pg.locator(f"[data-block={n}]").count() == 1 for n in ("sources", "takes", "playground", "timeline", "settings", "log")),
+              "the blocks: sources (and takes), playground, timeline, model, log")
         check(box["height"] <= 1080 and box["width"] <= 1920, f"the page fits 1920 x 1080 ({box['width']:.0f} x {box['height']:.0f})")
         check(abs(box["x"] - (1920 - box["x"] - box["width"])) < 2, f"it is centred horizontally (left {box['x']:.0f}, right {1920 - box['x'] - box['width']:.0f})")
         tl = pg.locator("[data-block=timeline]").bounding_box()
         check(0.17 < tl["height"] / 1080 < 0.23, f"the timeline is about a fifth of the screen ({tl['height'] / 1080:.0%})")
+        # where they are: the timeline under the sources, the model panel and the log under the playground, the timeline as wide as the sources
+        r = lambda n: pg.locator(f"[data-block={n}]").bounding_box()
+        check(r("timeline")["y"] > r("sources")["y"] + r("sources")["height"] - 2 and abs(r("timeline")["width"] - r("sources")["width"]) < 2,
+              "the timeline is under the sources and as wide as them")
+        check(r("settings")["y"] == r("log")["y"] == r("timeline")["y"] and r("settings")["x"] >= r("playground")["x"] - 1
+              and abs(r("settings")["x"] + r("settings")["width"] + 8 - r("log")["x"]) < 2 and abs(r("settings")["height"] - r("timeline")["height"]) < 2,
+              "the model panel and the log are under the playground, as high as the timeline")
         n = pg.locator(".src").count()
         check(n == S("S.sources.length") and n > 0, f"one button per representative ({n})")
 
@@ -129,6 +144,43 @@ try:
         pg.locator("[data-block=playground] [data-ref=clear]").click(); pg.wait_for_timeout(200)
         check(S("S.dots.filter(d => d).length") == 0 and S("S.point") is None, "Clear empties the playground")
 
+        # the model panel: NFE, CFG, seed, the model menu; Generate waits for the next step
+        nfe0 = S("S.gen.nfe")
+        k = pg.locator("[data-block=settings] .knob").first.locator("svg").bounding_box()
+        pg.mouse.move(k["x"] + 20, k["y"] + 20); pg.mouse.down(); pg.mouse.move(k["x"] + 20, k["y"] - 30, steps=5); pg.mouse.up(); pg.wait_for_timeout(200)
+        check(S("S.gen.nfe") != nfe0, f"the NFE knob changes the NFE ({nfe0} -> {S('S.gen.nfe')})")
+        pg.fill("[data-block=settings] [data-ref=seed]", "123"); pg.locator("[data-block=settings] [data-ref=seed]").press("Enter"); pg.wait_for_timeout(100)
+        pg.locator("[data-block=settings] [data-ref=dice]").click()
+        check(S("S.gen.seed") != 123 and 0 <= S("S.gen.seed") <= 999999, f"the die picks a new seed ({S('S.gen.seed')})")
+        check(pg.locator("[data-block=settings] [data-ref=generate]").is_disabled(), "Generate is off until there is a generator")
+        pg.locator("[data-block=settings] [data-ref=modelbtn]").click(); pg.wait_for_timeout(200)
+        check(pg.locator(".menu button").count() == 1 and "current" in pg.locator(".menu button").first.get_attribute("class"), "the model menu lists the model")
+        pg.mouse.click(5, 5); pg.wait_for_timeout(100)
+        check(pg.locator(".menu").count() == 0, "a click away closes it")
+        check("model m1" in pg.locator("[data-block=log] .lines").inner_text(), "the log says which model is shown")
+
+        # the takes: a tab in the place of the sources
+        check(not pg.locator("[data-block=takes]").is_visible() and pg.locator("[data-block=sources]").is_visible(), "the sources show first")
+        pg.locator("[data-block=sources] [data-tab=takes]").click(); pg.wait_for_timeout(200)
+        check(pg.locator("[data-block=takes]").is_visible() and not pg.locator("[data-block=sources]").is_visible(), "the Takes tab replaces the sources")
+        check(pg.locator(".take").count() == 1 and "NFE 12" in pg.locator(".take").inner_text() and "seed 7" in pg.locator(".take").inner_text(), "a take shows what made it")
+        check("Takes (1)" in pg.locator("[data-block=takes] [data-tab=takes]").inner_text(), "the tab counts the takes")
+        link = pg.locator(".take a.tdown")
+        check(link.get_attribute("href").endswith(take["id"] + ".wav") and link.get_attribute("download") == take["id"] + ".wav", "each take has its own download button")
+        r_ = urllib.request.urlopen(f"http://127.0.0.1:{port}/takes/{take['id']}.wav")
+        check(r_.status == 200 and r_.headers["content-type"] == "audio/wav" and r_.read(4) == b"RIFF", "the takes route serves the wav")
+        pg.locator(".take .tplay").click(); pg.wait_for_timeout(300)
+        check("playing" in pg.locator(".take").get_attribute("class") and pg.locator(".take .tplay").inner_text() == "■", "play marks the take and turns into stop")
+        pg.locator(".take .tplay").click(); pg.wait_for_timeout(200)
+        check("playing" not in pg.locator(".take").get_attribute("class"), "a second press stops it")
+        pg.locator("[data-block=takes] [data-tab=sources]").click(); pg.wait_for_timeout(100)
+        check(pg.locator("[data-block=sources]").is_visible(), "the Sources tab brings the sources back")
+        pg.locator("[data-block=sources] [data-tab=takes]").click(); pg.wait_for_timeout(100)
+        pg.locator(".take .tdel").click(); pg.wait_for_timeout(400)
+        check(pg.locator(".take").count() == 0 and "Nothing generated yet" in pg.locator("[data-block=takes]").inner_text()
+              and not (tmp / "takes" / (take["id"] + ".wav")).exists() and not (tmp / "takes" / (take["id"] + ".json")).exists(),
+              "removing a take removes its files")
+
         # the snippets route: only the audio of the model
         def status(url):
             try:
@@ -137,6 +189,7 @@ try:
                 return ex.code
         base = f"http://127.0.0.1:{port}/snippets"
         check(status(f"{base}/m1/000.mp3") == 200, "the snippet route serves a snippet")
+        check(status(f"http://127.0.0.1:{port}/takes/../atlas.wav") == 404 and status(f"http://127.0.0.1:{port}/takes/take-x.wav") == 404, "the takes route serves only takes")
         check(status(f"{base}/m1/abc.mp3") == 404 and status(f"{base}/nope/000.mp3") == 404 and status(f"{base}/m1/..%2Fatlas.npz") == 404,
               "...and nothing else")
         check(not errors, f"no page errors {errors}")

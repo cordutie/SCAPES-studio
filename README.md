@@ -6,7 +6,7 @@ an atlas of its data. Two modes:
 | Mode | What it is | Needs | Status |
 |---|---|---|---|
 | **Live** | Real-time generation: drop semantic sources on a plane, move a point between them, and the sound follows. Atlas, effects, meter and recorder. | An NVIDIA GPU that keeps up with the sound | working |
-| **Score** | Offline generation on a timeline: arrange sources over time, render, listen, export. | Any GPU (it does not run in real time) | the page works (sources, playground, timeline); generating the piece is the next step |
+| **Score** | Offline generation on a timeline: arrange sources over time, render, listen, export. | Any GPU (it does not run in real time) | the page works (sources, playground, timeline, model panel, log, takes); generating the piece is the next step |
 
 `python app.py` opens the start page, where you choose one. `python app_live.py` and `python app_score.py` open a mode directly.
 Online: [huggingface.co/spaces/cordutie/SCAPES-demo](https://huggingface.co/spaces/cordutie/SCAPES-demo) (Live needs a GPU of its
@@ -39,10 +39,10 @@ The Live page has a menu to switch models; the last one used starts next time.
 | `app.py`, `app_live.py`, `app_score.py` | the three ways to start (a mode is a page mounted on the same server) |
 | `studio/` | Python: `config.py` (every number), `models.py`, `hub.py`, `server.py`, `atlas_model.py`, `hull.py` |
 | `studio/live/` | Live: the generator thread (`engine.py`), the model session, the audio line (`transport.py`), the page's server functions |
-| `studio/score/` | Score: `library.py` (the models that have snippets), `score_api.py` (the server functions), `page.py` (the page and the snippets route) |
+| `studio/score/` | Score: `library.py` (the models that have snippets), `takes.py` (the generated pieces, wavs in `takes/`, gitignored), `score_api.py` (the server functions), `page.py` (the page and the snippets and takes routes) |
 | `web/shared/` | what every page uses: the look (`theme.css`, `theme.js`), knobs, the (i) texts (`info.js`), the effects |
 | `web/live/` | the Live page: one file per panel in `blocks/`, the audio player in `audio/`, the grid in `layout.html` |
-| `web/score/` | the Score page: the grid in `layout.html`, one file per block in `blocks/` (sources, playground, timeline) |
+| `web/score/` | the Score page: the grid in `layout.html`, one file per block in `blocks/` (sources, takes, playground, timeline, settings, log) |
 | `web/selector/` | the start page |
 | `tests/` | `test_live_api.py` (pytest, no GPU), and browser checks: `studio_check.py` (start page, modes, warning), `score_check.py`, `midi_check.py`, `ui_check.py`, `browser_check.py`, `model_menu_check.py`, `engine_check.py` |
 

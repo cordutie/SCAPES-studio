@@ -2,12 +2,14 @@
 // Click one to hear the audio it comes from; drag one onto the semantic playground to place it there.
 import {bus, ref} from '../../shared/core/state.js';
 import {S} from '../core/state.js';
+import {addTabs} from '../core/tabs.js';
 import {header} from '../../shared/core/ui.js';
 
 export function mount(root, ctx) {
   root.innerHTML = header('Semantic sources', 'Score sources') + `<div class="sources" data-ref="list"></div>`;
   const tools = ref(root, 'tools');
   tools.innerHTML = `<span class="readout" data-ref="model" title="the model whose sources these are"></span>`;
+  addTabs(root, tools);
   const list = ref(root, 'list'), modelName = ref(root, 'model');
 
   // --- the audio of a source: one at a time ---

@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse
 from studio import config
 from studio.score.library import Library
 from studio.score.score_api import SNIPPET, make_functions
+from studio.score.takes import ID, Takes
 
 ON_LOAD = "(async () => { const m = await import('/web/score/main.js?v=' + Date.now()); await m.start({element, server}); })();"
 
@@ -22,7 +23,8 @@ def build_page(server_functions):
 
 # Puts the Score mode on `app` at `path` ("/" alone, "/score" in the combined app): the snippets route, then the page (last: Gradio answers
 # everything under its path)
-def mount_score(app, library: Library, path="/"):
+def mount_score(app, library: Library, path="/", takes: Takes | None = None):
+    takes = takes or Takes(config.TAKES_DIR)
     prefix = "" if path == "/" else path.rstrip("/")
 
     @app.get(prefix + "/snippets/{model}/{file}")
@@ -34,4 +36,11 @@ def mount_score(app, library: Library, path="/"):
             raise HTTPException(404)
         return FileResponse(f, media_type="audio/mpeg", headers={"Cache-Control": "no-store"})
 
-    return gr.mount_gradio_app(app, build_page(make_functions(library, prefix)), path=path, ssr_mode=False)
+    @app.get(prefix + "/takes/{take_id}.wav")
+    def take(take_id: str):
+        if not ID.match(take_id) or not takes.path(take_id).is_file():
+            raise HTTPException(404)
+        return FileResponse(takes.path(take_id), media_type="audio/wav", headers={"Cache-Control": "no-store"},
+                            filename=f"{take_id}.wav")
+
+    return gr.mount_gradio_app(app, build_page(make_functions(library, takes, prefix)), path=path, ssr_mode=False)

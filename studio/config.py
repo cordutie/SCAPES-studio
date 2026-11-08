@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 WEB_DIR = ROOT / "web"
 MODELS_DIR = ROOT / "models"
+TAKES_DIR = Path(os.environ.get("SCAPES_STUDIO_TAKES", ROOT / "takes"))     # what Score mode generates: one wav and one json per take
 
 # on Hugging Face a Space sets SPACE_ID (and runs in a container that must listen on 0.0.0.0, port 7860)
 ON_HUGGING_FACE = bool(os.environ.get("SPACE_ID"))

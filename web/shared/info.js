@@ -47,4 +47,16 @@ export const INFO = {
     'Drag the point of the playground onto the timeline to add a clip. Drag a clip to move it, drag its right edge to change its length, double-click it to remove it.',
     'Zoom changes how wide a second is; Length is the length of the piece.',
   ],
+  'Score model': [
+    'The model that makes the piece, and what you choose for it. NFE is the number of steps the generator takes for each part of the sound: more steps, better and slower. CFG is how strongly the sound follows the semantics.',
+    'The seed makes a piece repeatable: the same score with the same seed makes the same sound. The dice picks a new one.',
+    'Generate makes the whole piece in one pass and keeps it in Takes.',
+  ],
+  'Takes': [
+    'What you generated, newest first, each with the settings that made it. They are kept on disk, so they are here the next time too.',
+    'Play one (a second press stops it), download it as a wav, or remove it for good.',
+  ],
+  'Log': [
+    'What the page is doing: the model that loaded and, when you generate, the report of the render. The top line says where the piece stands.',
+  ],
 };
