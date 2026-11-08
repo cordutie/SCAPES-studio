@@ -32,4 +32,19 @@ export const INFO = {
     'The log shows the load (green is faster than real time), the audio ahead of the player and the underruns. Volume sets the loudness; the meter shows the level of each channel.',
     'Play starts the sound, Stop ends it, and the red button records what you hear to a WAV file.',
   ],
+  // Score mode
+  'Score sources': [
+    'The sounds of the model that you can use, grouped by cluster, in the colour of the cluster. Each one is a real moment of the data, with its audio.',
+    'Click one to hear it. Drag one onto the Semantic playground to place it there.',
+  ],
+  'Score playground': [
+    'Place several sources as dots, then move the point between them: it stands for the mix of the sources around it, and the lines show how much of each.',
+    'Press and move on the empty area to steer the point, or drag a dot to move it. Double-click a dot to remove it.',
+    'Drag the point itself out of the playground onto the Timeline to make a clip of it, or press + Timeline to add it at the end.',
+  ],
+  'Timeline': [
+    'The piece, from left to right. Each clip is a point of the playground (a mix of sources) that will sound for the length of the clip.',
+    'Drag the point of the playground onto the timeline to add a clip. Drag a clip to move it, drag its right edge to change its length, double-click it to remove it.',
+    'Zoom changes how wide a second is; Length is the length of the piece.',
+  ],
 };

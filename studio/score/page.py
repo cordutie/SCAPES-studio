@@ -1,9 +1,37 @@
-"""The Score mode (offline generation on a timeline). Under construction: for now its page only says so (web/score/index.html)."""
-from studio.server import add_html_route
+"""The Score page: one gr.HTML whose markup is web/score/layout.html and whose script is web/score/main.js (the same way as Live), and the
+route that serves the audio snippets of the sources. Nothing about the look or the behaviour of the page is written in Python."""
+import re
+
+import gradio as gr
+from fastapi import HTTPException
+from fastapi.responses import FileResponse
+
+from studio import config
+from studio.score.library import Library
+from studio.score.score_api import SNIPPET, make_functions
+
+ON_LOAD = "(async () => { const m = await import('/web/score/main.js?v=' + Date.now()); await m.start({element, server}); })();"
 
 
-# Puts the Score mode on `app` at `path` ("/" alone, "/score" in the combined app)
-def mount_score(app, path="/"):
-    add_html_route(app, path, "score/index.html")
-    if path != "/":
-        add_html_route(app, path.rstrip("/") + "/", "score/index.html")
+def build_page(server_functions):
+    layout = (config.WEB_DIR / "score" / "layout.html").read_text()
+    with gr.Blocks(title="SCAPES Studio · Score") as page:
+        gr.HTML(value="", html_template=layout, js_on_load=ON_LOAD, server_functions=server_functions)
+    return page
+
+
+# Puts the Score mode on `app` at `path` ("/" alone, "/score" in the combined app): the snippets route, then the page (last: Gradio answers
+# everything under its path)
+def mount_score(app, library: Library, path="/"):
+    prefix = "" if path == "/" else path.rstrip("/")
+
+    @app.get(prefix + "/snippets/{model}/{file}")
+    def snippet(model: str, file: str):
+        if not SNIPPET.match(file) or not re.match(r"^[A-Za-z0-9_.-]+$", model) or model.startswith("."):
+            raise HTTPException(404)
+        f = library.dir / model / "snippets" / file
+        if not f.is_file():
+            raise HTTPException(404)
+        return FileResponse(f, media_type="audio/mpeg", headers={"Cache-Control": "no-store"})
+
+    return gr.mount_gradio_app(app, build_page(make_functions(library, prefix)), path=path, ssr_mode=False)

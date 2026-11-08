@@ -1,5 +1,5 @@
 """The combined app (python app.py) in headless Chromium: the start page with its two modes, the warning on Hugging Face, the Score
-placeholder, Live under /live (it plays through /live/ws/audio), and Live with no models. Starts its own servers.
+page, Live under /live (it plays through /live/ws/audio), and Live with no models. Starts its own servers.
 Run: python tests/studio_check.py [real_model_folder]"""
 import glob, os, subprocess, sys, tempfile, time, urllib.request
 from pathlib import Path
@@ -61,9 +61,10 @@ try:
         pg.wait_for_function("(() => { const v = window.__demo.player.levels(); return v.l > -60 || v.r > -60; })()", timeout=8000)
         check(True, "Live makes sound under /live")
         pg.screenshot(path=str(tmp / "live.png"))
-        # score placeholder
+        # score: its page under /score (the details are in score_check.py)
         pg = new("http://127.0.0.1:7881/score/")
-        check("under construction" in pg.inner_text("body").lower(), "/score says it is under construction")
+        pg.wait_for_function("window.__score && window.__score.timeline", timeout=90000)
+        check(pg.locator(".src").count() > 0 and pg.locator("[data-block=timeline]").count() == 1, "/score shows the sources and the timeline")
         # on Hugging Face: Live asks first
         pg = new("http://127.0.0.1:7882/")
         pg.click("#live")

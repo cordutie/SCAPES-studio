@@ -159,3 +159,35 @@ body { margin: 0; }
 #demo.midi-learning .midi-xy { display: flex; }
 #demo .midi-xy span { background: var(--bg); color: var(--text-strong); border: 1px solid var(--line); width: 26px; height: 22px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; user-select: none; }
+
+/* ---- score: the semantic sources and the playground on top, the timeline (about a fifth of the screen) below; aimed at 1920 x 1080 ---- */
+#demo.score { --canvas: 790px; --top-h: 836px; --tl-h: 220px; --pg-w: calc(var(--canvas) + 16px); --page-w: 1912px; }
+#demo.score .grid { grid-template-columns: 1fr var(--pg-w); grid-template-rows: var(--top-h) var(--tl-h); }
+#demo.score .frame { width: auto; height: auto; min-width: 0; }
+#demo.score [data-block=timeline] { grid-column: 1 / -1; }
+#demo.score .readout { color: var(--text); font-size: 14px; }
+#demo.score .sources { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-content: start;
+  overflow-y: auto; padding-right: 6px; scrollbar-width: thin; scrollbar-color: var(--line) var(--panel); }
+#demo.score .group { background: var(--bg); padding: 6px; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+#demo.score .gname { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#demo.score button.src { color: var(--bg); border: 3px solid var(--bg); height: 40px; font-weight: 700; font-size: 14px; padding: 2px 8px; text-align: left;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: none; touch-action: none; width: 100%; box-sizing: border-box; }
+#demo.score button.src.placed { border-color: var(--accent); }
+#demo.score button.src.playing { filter: brightness(1.3); }
+#demo.score .tl-scroll { flex: 1 1 auto; min-height: 0; overflow-x: auto; overflow-y: hidden; background: var(--bg); scrollbar-width: thin;
+  scrollbar-color: var(--line) var(--panel); }
+#demo.score .tl-inner { position: relative; height: calc(100% - 2px); min-width: 100%; }
+#demo.score .ruler { position: relative; height: 24px; border-bottom: 1px solid var(--line); }
+#demo.score .tick { position: absolute; top: 0; height: 100%; border-left: 1px solid var(--line); padding-left: 4px; font-size: 12px; line-height: 24px;
+  color: var(--text); white-space: nowrap; }
+#demo.score .tl-track { position: relative; height: calc(100% - 25px); }
+#demo.score .clip { position: absolute; top: 10px; bottom: 10px; border: 2px solid var(--panel); box-sizing: border-box; overflow: hidden; cursor: grab;
+  color: var(--bg); touch-action: none; user-select: none; }
+#demo.score .clip.sel { border-color: var(--accent); }
+#demo.score .clip .label { position: absolute; left: 6px; top: 6px; right: 12px; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; pointer-events: none; }
+#demo.score .clip .rs { position: absolute; right: 0; top: 0; bottom: 0; width: 8px; cursor: ew-resize; background: rgba(0, 0, 0, 0.3); }
+#demo.score .drop-mark { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--accent); pointer-events: none; z-index: 3; }
+#demo.score .drop-mark[hidden] { display: none; }
+#demo .chip { position: absolute; transform: translate(12px, -12px); z-index: 30; pointer-events: none; background: var(--panel); color: var(--text-strong);
+  border: 2px solid var(--line); padding: 3px 10px; font-weight: 700; font-size: 14px; white-space: nowrap; }

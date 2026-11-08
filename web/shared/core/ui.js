@@ -1,9 +1,10 @@
 // The head of every panel: the title at the left, the info button (i) next to it, the tools (buttons, small knobs, the light) at the right.
-// Use: root.innerHTML = header('Atlas') + ...;  then put the tools into ref(root, 'tools'). The text of the (i) is INFO[title] (web/info.js).
+// Use: root.innerHTML = header('Atlas') + ...;  (header(title, key): the text of the (i) is INFO[key], for a page that has its own text for a title)
+//  then put the tools into ref(root, 'tools'). The text of the (i) is INFO[title] (web/info.js).
 import {INFO} from '../info.js';
 
-export const header = (title) => {
-  const text = (INFO[title] || []).map((p) => `<p>${p}</p>`).join('');
+export const header = (title, key = title) => {
+  const text = (INFO[key] || []).map((p) => `<p>${p}</p>`).join('');
   return `<div class="top"><span class="panel-title">${title}</span>` +
     (text ? `<span class="info" tabindex="0">\u{1F6C8}︎<span class="info-tip">${text}</span></span>` : '') +
     `<span class="tools" data-ref="tools"></span></div>`;
