@@ -1,7 +1,7 @@
 // The interpolation panel of the Score page, in the place of the playground: the speed of the interpolation between a clip and the next one.
 // A square of time (x, 0 .. 1 across the gap) and position (y, 0 = the first clip, 1 = the next one). The dots are joined by their Lagrange
 // polynomial (core/curve.js). The two ends are fixed; drag a dot to move it, double-click an empty place to add one, double-click a dot to
-// remove it. Default (top left) puts the dots back. It opens with the symbol between two clips on the timeline.
+// remove it. Default (top right, next to Back) puts the dots back. It opens with the symbol between two clips on the timeline.
 import {bus, dist, ref} from '../../shared/core/state.js';
 import {S} from '../core/state.js';
 import {header} from '../../shared/core/ui.js';
@@ -13,12 +13,9 @@ const M = 48, DOT_R = 8, GRAB_PX = 14;                       // the margin aroun
 export function mount(root, ctx) {
   const T = ctx.theme, PX = ctx.size;
   root.innerHTML = header('Interpolation') + `<canvas data-ref="canvas" width="${PX}" height="${PX}"></canvas>`;
-  const top = root.querySelector('.top');
-  const reset = document.createElement('button');                // at the top left, next to the title
-  reset.textContent = 'Default'; reset.title = 'back to the default curve';
-  top.insertBefore(reset, ref(root, 'tools'));
-  ref(root, 'tools').innerHTML = `<span class="readout" data-ref="names"></span><button data-ref="back">Back</button>`;
-  const pc = ref(root, 'canvas'), names = ref(root, 'names');
+  ref(root, 'tools').innerHTML = `<button data-ref="reset" title="back to the default curve">Default</button><button data-ref="back">Back</button>`;
+  const reset = ref(root, 'reset');
+  const pc = ref(root, 'canvas');
   followTab(root);
 
   const clip = () => S.clips.find((c) => c.id === S.interp) || null;
@@ -42,7 +39,7 @@ export function mount(root, ctx) {
     }
     g.strokeStyle = T.line; g.strokeRect(M, M, S_, S_);
     g.font = `600 13px ${T.font}`; g.fillStyle = T.text;
-    g.textAlign = 'center'; g.fillText('time →', PX / 2, PX - 14);
+    g.textAlign = 'center'; g.fillText('time', PX / 2, PX - 14);
     g.textAlign = 'left';                                          // y = 1 (the next clip) above the square, y = 0 (the first clip) under it
     if (b) { g.fillStyle = ctx.palette[b.colour] || T.text; g.fillText('1 · ' + b.label, M, M - 14); }
     g.fillStyle = ctx.palette[a.colour] || T.text; g.fillText('0 · ' + a.label, M, PX - M + 20);
@@ -60,7 +57,6 @@ export function mount(root, ctx) {
       else { g.fillStyle = T.accent; g.fill(); g.strokeStyle = T.bg; g.lineWidth = 1.5; g.stroke(); }
       g.lineWidth = 1;
     });
-    names.textContent = b ? `${a.label} → ${b.label}` : '';
   }
 
   const near = (e) => {
