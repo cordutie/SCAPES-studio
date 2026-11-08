@@ -38,7 +38,7 @@ export const INFO = {
     'Click one to hear it. Drag one onto the Semantic playground to place it there, or straight onto the Timeline to make a clip of it.',
   ],
   'Score playground': [
-    'Place several sources as dots, then move the point between them: it stands for the mix of the sources around it, and the lines show how much of each. It works as in Live.',
+    'Place several sources as dots, then move the point between them: It works as in Live.',
     'Press and move on the empty area to steer the point. Edit (or hold Ctrl) lets you drag the dots. Double-click a dot to remove it; double-click an empty place to make a new dot there: it stands for the mix that was under it.',
     'Score (or hold Shift) makes every dot, and the point, glow: now you can drag any of them onto the Timeline to make a clip.',
   ],

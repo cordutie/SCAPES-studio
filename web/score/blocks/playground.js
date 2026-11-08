@@ -1,5 +1,5 @@
 // The semantic playground of the Score page. It works as the one of Live: place sources on it as dots (drag them from the sources), press
-// and move to set the control point (it stands for the mix of the dots around it, drawn as lines as strong as the weights), Edit (or hold
+// and move to set the control point (it stands for the mix of the dots around it), Edit (or hold
 // Ctrl) to move the dots, double-click a dot to remove it. What is new here:
 //   - a double-click on an empty place makes a free dot: it stands for the mix that was there (its CLAP embedding), whatever it is later;
 //   - Score (or hold Shift): every dot, and the control point, glows to show they can be picked: drag one onto the timeline to make a clip.
@@ -77,16 +77,7 @@ export function mount(root, ctx) {
       g.beginPath(); g.moveTo(corners[0][0], corners[0][1]); g.lineTo(corners[1][0], corners[1][1]);
       g.strokeStyle = T.accentFaint; g.lineWidth = 3; g.stroke(); g.lineWidth = 1;
     }
-    const c = pt && pt.c ? toPx(pt.c) : null;
-    if (c && pt.sel) {                                          // the mix: a line to each dot around the point, as strong as its weight
-      pt.sel.idx.forEach((i, k) => {
-        if (!S.dots[i]) return;                                  // a dot that was just removed: the answer has not come yet
-        const q = toPx(S.dots[i]);
-        g.beginPath(); g.moveTo(c[0], c[1]); g.lineTo(q[0], q[1]);
-        g.strokeStyle = colour(i); g.globalAlpha = 0.25 + 0.75 * pt.sel.lam[k]; g.lineWidth = 1 + 4 * pt.sel.lam[k]; g.stroke();
-      });
-      g.globalAlpha = 1; g.lineWidth = 1;
-    }
+    const c = S.c ? toPx(S.c) : null;                          // the point follows the pointer; the server only snaps it into the zone on release
     const breathe = 0.5 + 0.5 * Math.sin(performance.now() / 260);
     S.dots.forEach((d, i) => {
       if (!d) return;
@@ -162,8 +153,9 @@ export function mount(root, ctx) {
     if (!pg.moved && dist([e.clientX, e.clientY], [pg.x, pg.y]) < MOVE_PX) return;
     pg.moved = true;
     const raw = planeRaw(e);
-    if (pg.mode === 'dot') { S.dots[pg.i] = clampP([raw[0] + pg.off[0], raw[1] + pg.off[1]]); draw(); bus.emit('dots'); ask(); }
-    else if (pg.mode === 'point' && placed()) { S.c = clampP(raw); ask(); }
+    // nothing is asked of the server while it moves (that was the lag): it answers once, on release
+    if (pg.mode === 'dot') { S.dots[pg.i] = clampP([raw[0] + pg.off[0], raw[1] + pg.off[1]]); draw(); bus.emit('dots'); }
+    else if (pg.mode === 'point' && placed()) { S.c = clampP(raw); draw(); }
     else if (pg.mode === 'carry') carry(e, pg.item);
   });
   const release = (e) => {
@@ -171,6 +163,7 @@ export function mount(root, ctx) {
     const g = pg; pg = null;
     if (chip) { chip.remove(); chip = null; ctx.timeline.leave(); }
     if (g.mode === 'carry' && g.moved) ctx.timeline.dropAt(e.clientX, e.clientY, g.item);
+    else if (g.moved && (g.mode === 'dot' || g.mode === 'point') && placed()) ask();      // where the point (and the zone) ended up
   };
   pc.addEventListener('pointerup', release); pc.addEventListener('pointercancel', release);
 

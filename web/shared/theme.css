@@ -64,6 +64,7 @@ body { margin: 0; }
 /* ---- controls ---- */
 #demo button, #demo input { background: var(--bg); color: var(--text-strong); border: 1px solid var(--line); font: inherit;
                             font-weight: 600; padding: 3px 10px; }
+#demo .tools button, #demo .tabs button { margin: 0; }        /* Gradio puts a margin under every button but the last: the tools would not line up */
 #demo input[type=number] { width: 70px; }
 #demo label { color: var(--text-strong); font: inherit; font-weight: 600; }
 #demo button.on { color: var(--accent); border-color: var(--accent); }
