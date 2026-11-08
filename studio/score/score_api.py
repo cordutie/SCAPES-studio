@@ -95,7 +95,7 @@ def make_functions(library, takes, prefix, generator=None):
                 samples, sr = generator.render(name, rows, nfe, cfg, seed, progress)
                 path3 = np.round(AtlasModel(model.atlas).to3d(rows), 4).tolist()          # where the piece went in the 3-D atlas
                 take = takes.add(samples, sr, {"model": name, "nfe": nfe, "cfg": cfg, "seed": seed, "start": t0, "rate": 1.0 / hop,
-                                               "clips": [{"start": c["start"], "dur": c["dur"], "comp": c["comp"]} for c in clips],
+                                               "clips": [{k: c.get(k) for k in ("start", "dur", "comp", "curve")} for c in clips],
                                                "path3": path3})
                 j.say(f"done: {take['name']} · {take['seconds']:.1f} s of audio in {time.time() - j.started:.0f} s")
                 return {k: v for k, v in take.items() if k != "path3"}

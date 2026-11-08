@@ -4,6 +4,7 @@
 //                              'dots'    a dot was placed, moved or removed in the playground
 //                              'point'   the point of the playground moved (S.point is new)
 //                              'clips'   a clip was added, moved, resized or removed
+//                              'interp'  an interpolation was opened or closed (S.interp)
 //                              'tab'     the page changed between its two views (sources + playground, or takes + atlas)
 //                              'takes'   the list of takes changed
 //                              'render'  the generation started, advanced (S.rendering.progress) or ended
@@ -16,8 +17,10 @@ export const S = {
   c: null,                                 // the point asked for on the playground (the server answers the one in the zone of the dots)
   point: null,                             // the server's answer: {sel: {idx, lam}, c, outline}, or null without dots
   tab: 'sources',                          // the view: 'sources' (sources + playground) or 'takes' (takes + atlas)
+  interp: null,                            // the id of the clip whose interpolation (to the next clip) is open in the place of the playground, or null
   takes: [],                               // what was generated: [{id, name, created, seconds, model, nfe, cfg, seed}], newest first
   gen: {nfe: 8, cfg: 1.0, seed: 0},        // the settings of the next generation
   rendering: null,                         // while a piece is being generated: {progress}
-  clips: [],                               // the timeline: [{id, start, dur, comp, label}], seconds
+  clips: [],                               // the timeline: [{id, start, dur, comp, label, curve}], seconds; curve = the speed of the interpolation
+                                           // to the next clip: [[time, position], ...], or absent for the default (see core/curve.js)
 };

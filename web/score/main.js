@@ -8,7 +8,7 @@ import {makeApi} from './core/api.js';
 import {createRender} from './core/render.js';
 import {PALETTE, readTheme, loadCss} from '../shared/theme.js';
 
-const BLOCKS = ['log', 'timeline', 'playground', 'atlas', 'sources', 'takes', 'settings'];     // the log first (the others write to it), the timeline before what drops on it
+const BLOCKS = ['log', 'timeline', 'playground', 'interpolation', 'atlas', 'sources', 'takes', 'settings'];     // the log first (the others write to it), the timeline before what drops on it
 
 export async function start({element, server}) {
   await loadCss('/web/shared/theme.css');

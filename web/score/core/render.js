@@ -13,7 +13,7 @@ export function createRender(ctx) {
     S.rendering = {progress: 0}; bus.emit('render');
     ctx.log(`generating ${S.clips.length} clip${S.clips.length > 1 ? 's' : ''} with ${S.model}`);
     try {
-      const clips = S.clips.map((c) => ({start: c.start, dur: c.dur, comp: c.comp}));
+      const clips = S.clips.map((c) => ({start: c.start, dur: c.dur, comp: c.comp, curve: c.curve || null}));
       const r = await ctx.api.render({model: S.model, clips, nfe: S.gen.nfe, cfg: S.gen.cfg, seed: S.gen.seed});
       if (!r.ok) { ctx.log(r.error || 'could not start', true); return; }
       let seen = 0, st;

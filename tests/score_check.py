@@ -124,12 +124,12 @@ try:
         pg.mouse.up()
         pg.locator("[data-block=playground] [data-ref=score]").click(); pg.wait_for_timeout(200)
         check("on" in pg.locator("[data-block=playground] [data-ref=score]").get_attribute("class"), "the Score button latches")
+        pps = pg.evaluate("window.__score.timeline.scale()")
         pg.mouse.move(fx_, fy_); pg.mouse.down(); pg.mouse.move(fx_, fy_ + 30, steps=3)
         pg.mouse.move(tl_track["x"] + 300, tl_track["y"] + 60, steps=12)
         check(pg.locator(".chip").count() == 1 and pg.locator(".drop-mark").is_visible(), "carrying a dot shows a chip and a mark on the timeline")
         pg.mouse.up(); pg.wait_for_timeout(300)
         clips = S("S.clips")
-        pps = pg.evaluate("window.__score.timeline.scale()")
         check(len(clips) == 1 and clips[0]["dur"] == 3, f"the drop makes a clip of 3 s ({clips and clips[0]['dur']})")
         check(clips and abs(clips[0]["start"] - (300 / pps)) < 0.5, f"...where it was dropped ({clips and round(clips[0]['start'], 2)} s)")
         check(clips and clips[0]["comp"] == fc, "...and it holds the embedding of the free dot")
@@ -182,6 +182,39 @@ try:
         check(all(ends[i]["start"] + ends[i]["dur"] <= ends[i + 1]["start"] + 1e-6 for i in range(len(ends) - 1)), "clips still do not overlap")
         pg.locator(".clip").nth(3).dblclick(); pg.wait_for_timeout(200)
         check(len(S("S.clips")) == 3, "double-click removes a clip")
+
+        # the timeline keeps 10 s free after the last clip
+        last_end = max(k["start"] + k["dur"] for k in S("S.clips"))
+        check(pg.evaluate("window.__score.timeline.span()") >= last_end + 10 - 0.05, f"10 seconds of room after the last clip ({pg.evaluate('window.__score.timeline.span()'):.1f} s on show, the piece ends at {last_end:.1f})")
+
+        # the interpolation: the symbol opens its panel in the place of the playground
+        sym = pg.locator(".interp").first
+        check(sym.inner_text() == "\u219d", "the symbol between clips is U+219D")
+        sym.click(); pg.wait_for_timeout(300)
+        check(pg.locator("[data-block=interpolation]").is_visible() and not pg.locator("[data-block=playground]").is_visible() and "open" in sym.get_attribute("class"),
+              "clicking it opens the interpolation panel in the place of the playground")
+        ib = pg.locator("[data-block=interpolation] canvas").bounding_box()
+        U = lambda x, y: (ib["x"] + ib["width"] * (48 + x * (790 - 96)) / 790, ib["y"] + ib["height"] * (790 - 48 - y * (790 - 96)) / 790)
+        cv = lambda: S("S.clips.find(c => c.id === S.interp).curve")
+        check(cv() == [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]], "it starts with the default dots (0,0) (0.2,0.4) (0.5,0.5) (0.8,0.6) (1,1)")
+        pg.mouse.dblclick(*U(0.35, 0.9)); pg.wait_for_timeout(200)
+        check(len(cv()) == 6 and [round(p[0], 2) for p in cv()][2] == 0.35, "a double-click on an empty place adds a dot")
+        pg.mouse.move(*U(0.5, 0.5)); pg.mouse.down(); pg.mouse.move(*U(0.55, 0.8), steps=5); pg.mouse.up(); pg.wait_for_timeout(200)
+        moved = [p for p in cv() if abs(p[0] - 0.55) < 0.03]
+        check(moved and abs(moved[0][1] - 0.8) < 0.03, "a dot can be dragged")
+        pg.mouse.move(*U(0, 0)); pg.mouse.down(); pg.mouse.move(*U(0.1, 0.3), steps=4); pg.mouse.up(); pg.wait_for_timeout(100)
+        check(cv()[0] == [0, 0], "the ends do not move")
+        pg.mouse.dblclick(*U(0.35, 0.9)); pg.wait_for_timeout(200)
+        check(len(cv()) == 5, "a double-click on a dot removes it")
+        check("custom" in pg.locator(".interp").first.get_attribute("class"), "a changed curve marks its symbol")
+        pg.locator("[data-block=interpolation] button", has_text="Default").click(); pg.wait_for_timeout(200)
+        check(cv() == [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]] and "custom" not in pg.locator(".interp").first.get_attribute("class"), "Default puts the dots back")
+        pg.mouse.dblclick(*U(0.35, 0.9)); pg.wait_for_timeout(200)              # leave a custom curve for the generation below
+        pg.locator("[data-block=interpolation] [data-ref=back]").click(); pg.wait_for_timeout(200)
+        check(pg.locator("[data-block=playground]").is_visible() and not pg.locator("[data-block=interpolation]").is_visible(), "Back returns to the playground")
+        sym2 = pg.locator(".interp").first
+        sym2.click(); pg.wait_for_timeout(200); sym2.click(); pg.wait_for_timeout(200)
+        check(pg.locator("[data-block=playground]").is_visible(), "a second click on the symbol closes the panel")
 
         # Generate: renders from the first clip to the last one, and keeps the path in the atlas
         gen = pg.locator("[data-block=settings] [data-ref=generate]")

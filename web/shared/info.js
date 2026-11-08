@@ -45,12 +45,16 @@ export const INFO = {
   'Timeline': [
     'The piece, from left to right. Each clip is one embedding (a source, or a mix of sources) held for its length; a new clip lasts 3 seconds.',
     'Drag a source, a dot or the point onto the timeline to add a clip. Drag a clip to move it, drag its right edge to change its length, double-click it to remove it.',
-    'Between two clips the embedding goes from the one to the other across the gap, marked with the symbol (slerp for now; with no gap it is a cut). The scale fits the piece by itself, and generating renders from the first clip to the last.',
+    'Between two clips the embedding goes from the one to the other across the gap, marked with the symbol ↝ (click it to set the speed; slerp for now; with no gap it is a cut). The scale fits the piece by itself, and generating renders from the first clip to the last.',
   ],
   'Score model': [
     'The model that makes the piece, and what you choose for it. NFE is the number of steps the generator takes for each part of the sound: more steps, better and slower. CFG is how strongly the sound follows the semantics.',
     'The seed makes a piece repeatable: the same score with the same seed makes the same sound. The dice picks a new one.',
     'Generate makes the whole piece in one pass and keeps it in Takes.',
+  ],
+  'Interpolation': [
+    'How the sound goes from one clip to the next across the gap between them. Time runs from left to right (0 is the end of the first clip, 1 the start of the next); height is the position (0 is the first clip, 1 the next one).',
+    'The curve is the polynomial through the dots. Double-click an empty place to add a dot, double-click a dot to remove it, drag a dot to move it. The two ends are fixed. Default puts the dots back.',
   ],
   'Score atlas': [
     'The atlas in 3-D, as in Live. When a take plays, the line is the path it followed through the atlas and the orange dot is where the sound is now.',

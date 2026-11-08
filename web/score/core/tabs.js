@@ -3,12 +3,14 @@
 import {bus} from '../../shared/core/state.js';
 import {S} from './state.js';
 
-const VIEW = {sources: 'sources', playground: 'sources', takes: 'takes', atlas: 'takes'};
+const VIEW = {sources: 'sources', playground: 'sources', interpolation: 'sources', takes: 'takes', atlas: 'takes'};
 
 // hides a block when it is not of the view on show; call it for every block that has a view
 export function followTab(root) {
-  const sync = () => { root.hidden = VIEW[root.dataset.block] !== S.tab; };
-  bus.on('tab', sync); bus.on('boot', sync);
+  const block = root.dataset.block;
+  // the interpolation panel takes the place of the playground while a symbol of the timeline is open
+  const sync = () => { root.hidden = VIEW[block] !== S.tab || (block === 'playground' && S.interp !== null) || (block === 'interpolation' && S.interp === null); };
+  bus.on('tab', sync); bus.on('boot', sync); bus.on('interp', sync);
   sync();
 }
 
