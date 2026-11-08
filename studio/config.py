@@ -38,5 +38,5 @@ STATUS_PERIOD_S = 0.10
 LOAD_WARN = 0.85
 LATE_HOLD_S = 1.5
 
-# the Live page shows at most this many cluster blocks (the palette in web/shared/theme.js holds 32)
-MAX_CLUSTERS = 32
+# the Live page shows at most this many cluster blocks (the palette in web/shared/theme.js holds 60)
+MAX_CLUSTERS = 60

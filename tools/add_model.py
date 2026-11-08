@@ -1,6 +1,7 @@
 """Puts a trained model into models/ so the page can play it: copies what playing needs (not the epoch checkpoints, the losses,
-the validation audio or the dataset), and gives its atlas the cluster names and the prior if it was saved without them (a model
-trained before dataprep wrote them), learning both from the CLAP embeddings that are still in the build folder.
+the validation audio or the dataset) and the snippets of the representatives of its clusters, and gives its atlas the cluster names and
+the prior if it was saved without them (a model trained before dataprep wrote them), learning both from the CLAP embeddings that are
+still in the build folder.
 
     python tools/add_model.py <build>/models/<size>_mem<ms> [--name NAME]
 
@@ -39,6 +40,8 @@ def main():
         if (src / "checkpoints" / f).exists():
             shutil.copy2(src / "checkpoints" / f, dst / "checkpoints" / f)
     shutil.copy2(src / "atlas.npz", dst / "atlas.npz")
+    if (src / "snippets").is_dir():          # the audio of the representatives of the clusters (used by Score mode)
+        shutil.copytree(src / "snippets", dst / "snippets")
 
     atlas = Atlas.load(dst / "atlas.npz")
     if atlas.prior is None or all(n.startswith("cluster ") for n in atlas.names):

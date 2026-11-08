@@ -5,13 +5,17 @@
 // 520 is the roomy size; 480 fits a 1080p screen without scrolling.
 export const CANVAS = 480;
 
-// The colours of the semantic sources and their dots (32), from the track and clip palette of Ableton Live (its two main rows),
-// ordered so that neighbours differ; the last six are muted versions for the rare atlas with more than 26 clusters.
+// The colours of the semantic sources and their dots (60), from the track and clip palette of Ableton Live (its two main rows),
+// ordered so that neighbours differ; the last six of the first 32 are muted, and from the 33rd on they are paler copies of the first 28.
 // To change the colours of everything that follows a cluster (blocks, dots, atlas points, regions), change this list.
-export const PALETTE = ["#FF3636", "#19E9FF", "#F7F47C", "#886CE4", "#3DC300", "#FFA529", "#5480E4", "#E553A0",
+const BASE = ["#FF3636", "#19E9FF", "#F7F47C", "#886CE4", "#3DC300", "#FFA529", "#5480E4", "#E553A0",
   "#BFFB00", "#00BFAF", "#CC9927", "#D86CE4", "#FF94A6", "#25FFA8", "#10A4EE", "#F66C03",
   "#92A7FF", "#87FF67", "#99724B", "#B677C6", "#FF39D4", "#8BC5FF", "#1AFF2F", "#5CFFE8",
   "#007DC0", "#FFF034", "#C75A6B", "#4FA86F", "#B59A3A", "#6B7FA8", "#9C6BA8", "#6B9C9C"];
+
+// Atlases can have up to 60 clusters: the colours after the 32 are the same ones, paler (the text of a block is dark, so it stays readable).
+const pale = (hex) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.5 + 127.5).toString(16).padStart(2, '0')).join('');
+export const PALETTE = BASE.concat(BASE.slice(0, 28).map(pale));
 
 // The variables of theme.css that canvases use, as {name: value}.
 export function readTheme(root) {

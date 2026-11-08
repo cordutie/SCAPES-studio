@@ -9,7 +9,7 @@ Rules:
 - Snapping (locate): a dot within the dot tolerance wins; else a point within the edge tolerance of a hull
   boundary edge (or of the line) is projected onto it; else a point inside the hull uses its triangle.
 - project_to_zone(p, dots) is the closest point of the zone to p, so the control point can be kept inside it.
-Dots are given as a list with one entry per cluster (K entries, up to 32), each (x, y) or None;
+Dots are given as a list with one entry per cluster (K entries, up to 60), each (x, y) or None;
 indices refer to positions in that list. The mean inside a triangle is the nested slerp.
 """
 import numpy as np
