@@ -8,6 +8,7 @@
 // 250 ms after the last turn of the wheel (for what is heavy to apply, like NFE).
 // step: the value is rounded to a multiple of it. The look is in theme.css (.knob) and the sizes below.
 import {linear} from './maps.js';
+import {midi} from './midi.js';
 
 const SWEEP = 270;                  // degrees of travel
 const PER_PX = 1 / 180;             // position per pixel of drag; Shift: a fifth of it
@@ -99,5 +100,7 @@ export function createKnob(o) {
   });
 
   paint();
+  // MIDI: the CC moves the knob over its range (a slow change: NFE and CFG apply 250 ms after the last message, not at each one)
+  midi.register({el, id: o.midiId || o.label || 'knob', name: o.name || o.label || 'knob', setNorm: (t) => setValue(map.fromPos(t), true, true)});
   return {el, get: () => value, set: (v) => setValue(v, false)};
 }

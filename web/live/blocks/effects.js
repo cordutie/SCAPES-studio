@@ -4,6 +4,7 @@
 import {ref} from '../../shared/core/state.js';
 import {createKnob} from '../../shared/core/knob.js';
 import {header} from '../../shared/core/ui.js';
+import {midi} from '../../shared/core/midi.js';
 
 export function mount(root, ctx) {
   root.innerHTML = header('FX') + `<div class="cells" data-ref="cells"></div>`;
@@ -18,6 +19,10 @@ export function mount(root, ctx) {
     input.title = p.label;
     input.addEventListener('input', () => chain.setParam(fx.id, p.id, parseFloat(input.value)));
     input.addEventListener('dblclick', () => { input.value = p.value; chain.setParam(fx.id, p.id, p.value); });
+    midi.register({el: input, id: `${fx.id}.${p.id}`, name: 'EQ ' + p.label, setNorm: (t) => {
+      const v = Math.round((p.min + t * (p.max - p.min)) / p.step) * p.step;
+      input.value = v; chain.setParam(fx.id, p.id, parseFloat(input.value));
+    }});
     return input;
   }
 
@@ -43,7 +48,7 @@ export function mount(root, ctx) {
       body.className = 'knobs';
       fx.params.forEach((p) => {
         const k = createKnob({label: p.label, map: p.map, value: fx.values[p.id], def: p.value, format: p.format, parse: p.parse,
-                              step: p.step, size: 64, onChange: (v) => chain.setParam(fx.id, p.id, v)});
+                              step: p.step, size: 64, midiId: `${fx.id}.${p.id}`, name: `${fx.name} ${p.label}`, onChange: (v) => chain.setParam(fx.id, p.id, v)});
         body.appendChild(k.el);
       });
     }

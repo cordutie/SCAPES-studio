@@ -8,6 +8,7 @@ import {createKnob} from '../../shared/core/knob.js';
 import {linear} from '../../shared/core/maps.js';
 import {header} from '../../shared/core/ui.js';
 import {drawPointer} from '../../shared/core/pointer.js';
+import {midi} from '../../shared/core/midi.js';
 
 const DOT_R = 8;                  // px: the dots
 const GRAB_PX = 12, MOVE_TOL = 5;     // px: distance that grabs a dot; press-and-move threshold
@@ -168,6 +169,10 @@ export function mount(root, ctx) {
   // --- the glide bar ---
   ref(root, 'edit').addEventListener('click', () => { latched = !latched; syncEdit(); });
   ref(root, 'glide').addEventListener('click', (e) => { S.glide = !S.glide; e.target.classList.toggle('on', S.glide); });
+
+  // MIDI: the x and the y of the point asked for (the other one stays where it is)
+  const midiMove = (p) => { glideTok = null; if (moveCtrl(p)) { draw(); ctx.live.request(); } };
+  midi.addXY(root, 'Semantic playground', (t) => midiMove([2 * t - 1, S.aim[1]]), (t) => midiMove([S.aim[0], 2 * t - 1]));
 
   bus.on('live', draw); bus.on('dots', draw); bus.on('boot', draw);
   ctx.plane = {canvas: pc, planeRaw, draw};

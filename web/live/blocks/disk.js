@@ -5,6 +5,7 @@ import {createKnob} from '../../shared/core/knob.js';
 import {linear} from '../../shared/core/maps.js';
 import {header} from '../../shared/core/ui.js';
 import {drawPointer} from '../../shared/core/pointer.js';
+import {midi} from '../../shared/core/midi.js';
 
 
 export function mount(root, ctx) {
@@ -82,6 +83,9 @@ export function mount(root, ctx) {
     });
   }
   priorBtn.addEventListener('click', priorToggle);
+  // MIDI: the x and the y of the point (ignored while Auto moves it)
+  const midiMove = (u) => { if (S.prior) return; S.u = clampD(u); draw(); ctx.live.request(); };
+  midi.addXY(root, 'Structure playground', (t) => midiMove([2 * t - 1, S.u[1]]), (t) => midiMove([S.u[0], 2 * t - 1]));
   bus.on('live', draw); bus.on('dots', draw);
   bus.on('boot', () => {
     priorBtn.disabled = !S.hasPrior;

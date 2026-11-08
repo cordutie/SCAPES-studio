@@ -4,6 +4,7 @@
 // The model menu lists the folders of models/ and switches the model on the server; the page then reloads.
 import {S, ref} from '../../shared/core/state.js';
 import {createKnob} from '../../shared/core/knob.js';
+import {midi} from '../../shared/core/midi.js';
 import {linear, log, fader, fmtDb, parseDb} from '../../shared/core/maps.js';
 import {header} from '../../shared/core/ui.js';
 
@@ -21,7 +22,7 @@ export function mount(root, ctx) {
     </div>
     <div class="m-bottom">
       <div class="m-meter"><canvas class="meter" data-ref="meter" width="360" height="130"></canvas>
-        <div class="transport"><button data-ref="play" title="play">▶</button><button data-ref="stop" title="stop">■</button><button data-ref="rec" title="record what you hear to a WAV file">●</button></div></div>
+        <div class="transport"><button data-ref="play" title="play">▶</button><button data-ref="stop" title="stop">■</button><button data-ref="rec" title="record what you hear to a WAV file">●</button><button data-ref="midi" title="MIDI learn: move a controller, then press a knob or fader to bind it (with no controller moved, the press deletes its map)">⏣</button></div></div>
       <div class="m-volume" data-ref="volume"></div>
     </div>
     <div class="menu" data-ref="menu" hidden></div>`;
@@ -107,6 +108,14 @@ export function mount(root, ctx) {
     const secs = rec.stop(name);
     recBtn.classList.remove('rec');
     logLine(secs ? `saved ${name}.wav (${secs.toFixed(1)} s)` : 'nothing was recorded', !secs);
+  });
+  // MIDI learn (shared/core/midi.js): the button is orange while it listens
+  const midiBtn = ref(root, 'midi');
+  if (!midi.supported) { midiBtn.disabled = true; midiBtn.title = 'MIDI is not available in this browser (use Chrome, Edge or Opera)'; }
+  midiBtn.addEventListener('click', () => midi.toggleLearn());
+  midi.on((e) => {
+    if (e.type === 'learn') midiBtn.classList.toggle('on', e.on);
+    else logLine(e.text, e.warn);
   });
   player.on('run', () => { starting = false; buttons(); });
   player.on('error', (m) => { starting = false; logLine(m.message, true); buttons(); });
