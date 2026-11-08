@@ -25,7 +25,9 @@ def make_manager(models_dir, checkpoint="best"):
 
 # Puts the Live mode on `app` at `path` ("/" alone, "/live" in the combined app): its audio line and its page.
 # The page is added last: Gradio answers everything under its path.
+# ssr_mode=False: on a Hugging Face Space Gradio turns on server-side rendering, which starts a Node server on GRADIO_SERVER_PORT (7860),
+# the port that this server needs. The page is drawn in the browser anyway.
 def mount_live(app, manager, path="/"):
     prefix = "" if path == "/" else path.rstrip("/")
     add_audio_route(app, manager, prefix)
-    return gr.mount_gradio_app(app, build_page(make_functions(manager)), path=path)
+    return gr.mount_gradio_app(app, build_page(make_functions(manager)), path=path, ssr_mode=False)
