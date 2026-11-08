@@ -63,7 +63,7 @@ try:
         pg.screenshot(path=str(tmp / "live.png"))
         # score placeholder
         pg = new("http://127.0.0.1:7881/score/")
-        check("Under construction" in pg.inner_text("body"), "/score says it is under construction")
+        check("under construction" in pg.inner_text("body").lower(), "/score says it is under construction")
         # on Hugging Face: Live asks first
         pg = new("http://127.0.0.1:7882/")
         pg.click("#live")

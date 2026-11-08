@@ -8,7 +8,7 @@ from SCAPES.inference.FlowInference import FlowInference
 from studio.atlas_model import AtlasModel
 from studio.live.engine import RealtimeEngine
 
-model_dir = sys.argv[1] if len(sys.argv) > 1 else "../models/oli_music2latent_10hz_1000ms/models/small_mem1000"
+model_dir = sys.argv[1] if len(sys.argv) > 1 else "../data/models_build/tape_echo_music2latent_10hz_1000ms/models/small_mem1000"
 inf = FlowInference(model_dir, device="cuda", checkpoint="best")
 atlas = AtlasModel.load(f"{model_dir}/atlas.npz")
 g = inf.geom

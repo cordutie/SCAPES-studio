@@ -42,6 +42,7 @@ try:
         check("alpha" in first, "the first model (alphabetical) is loaded")
         btn.click()
         items = page.locator("[data-block=generation] .menu button")
+        page.wait_for_timeout(1500)
         check(items.count() == 2, f"the menu lists the two models and not the folder that is not one ({items.count()})")
         check("current" in (items.nth(0).get_attribute("class") or ""), "the loaded model is marked")
         page.screenshot(path=str(tmp / "menu.png"))

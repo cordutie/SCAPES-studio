@@ -10,34 +10,24 @@
 <body>
 <div id="demo" class="start" data-on-hf="{{ON_HF}}">
   <h1>SCAPES Studio</h1>
-  <p class="lead">Two ways to play with SCAPES, a generative model of environmental sounds. Choose a mode.</p>
   <div class="cards">
     <a class="card" id="live" href="/live/">
-      <h2>Live</h2>
-      <div class="tag">real time · best run locally</div>
-      <p>Play the model like an instrument. Drop semantic sources on a plane and move a point between them: the sound is generated
-         continuously, a fraction of a second at a time, and follows your hand.</p>
-      <ul>
-        <li>semantic sources, an atlas of the data and two playgrounds (meaning and structure)</li>
-        <li>effects, level meter and a recorder, all in the browser</li>
-        <li>needs a GPU that keeps up with the sound</li>
-      </ul>
+      <h2>Live mode</h2>
+      <div class="tag">real time · controllable · instrument · best run locally</div>
+      <p>Play the model like an instrument, in real time. Drive the generation with different techniques of semantic manipulation.
+         The sound is generated continuously, a fraction of a second at a time, and follows your hand. Larger models need a GPU.</p>
+      <p class="hf-note">On Hugging Face, Live mode runs on a shared GPU, so the sound may stop suddenly. Run it locally for the real experience.</p>
     </a>
     <a class="card" id="score" href="/score/">
-      <h2>Score</h2>
-      <div class="tag">offline · timeline · under construction</div>
-      <p>Compose with the same sources along a timeline, generate the whole piece at once and listen to it afterwards.
-         It does not need to keep up with real time, so it also works on a shared GPU.</p>
-      <ul>
-        <li>arrange sources over time</li>
-        <li>render, listen, export</li>
-        <li>coming soon</li>
-      </ul>
+      <h2>Score mode</h2>
+      <div class="tag">offline · arrangeable · timeline · under construction</div>
+      <p>Compose with multiple semantic sources along a score, then generate the entire piece in a single pass.
+         Manipulate the semantics and interpolate between them in different ways.</p>
     </a>
   </div>
-  <p class="foot">Code: <a class="link" href="https://github.com/cordutie/SCAPES-studio" target="_blank">SCAPES-studio</a> ·
-     model: <a class="link" href="https://github.com/cordutie/SCAPES" target="_blank">SCAPES</a> ·
-     models: <a class="link" href="https://huggingface.co/cordutie/SCAPES-models" target="_blank">SCAPES-models</a></p>
+  <p class="foot">code: <a class="link" href="https://github.com/cordutie/SCAPES" target="_blank">SCAPES</a> ·
+     weights: <a class="link" href="https://huggingface.co/cordutie/SCAPES-models" target="_blank">SCAPES-models</a> ·
+     GUI: <a class="link" href="https://github.com/cordutie/SCAPES-studio" target="_blank">SCAPES-studio</a></p>
 
   <dialog id="warn">
     <h3>Live mode on a shared GPU</h3>

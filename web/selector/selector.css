@@ -1,8 +1,8 @@
 /* The start page and the Score placeholder: the same variables as the panels (web/shared/theme.css), laid out as a page of cards */
 body { margin: 0; background: #141414; }
-#demo.start { width: auto; max-width: 980px; margin: 0 auto; padding: 48px 24px; min-height: 100vh; }
-#demo.start h1 { margin: 0; font-size: 34px; color: var(--text-strong); letter-spacing: 0.5px; }
-#demo.start .lead { margin: 8px 0 32px; font-size: 17px; }
+#demo.start { width: auto; max-width: 980px; margin: 0 auto; padding: 32px 24px; min-height: 100vh; box-sizing: border-box;
+                display: flex; flex-direction: column; justify-content: center; }
+#demo.start h1 { margin: 0 0 32px; text-align: center; font-size: 34px; color: var(--text-strong); letter-spacing: 0.5px; }
 #demo.start .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 #demo.start .card { display: block; background: var(--panel); padding: 22px 24px; text-decoration: none; color: var(--text); border: 1px solid transparent; }
 #demo.start .card:hover { border-color: var(--accent); }
@@ -11,7 +11,9 @@ body { margin: 0; background: #141414; }
 #demo.start .card .tag { font-size: 13px; color: var(--accent); margin-bottom: 12px; }
 #demo.start .card p { margin: 8px 0; line-height: 1.5; }
 #demo.start .card ul { margin: 8px 0 0; padding-left: 20px; line-height: 1.5; }
-#demo.start .foot { margin-top: 32px; font-size: 14px; }
+#demo.start .foot { margin: 32px 0 0; font-size: 14px; text-align: center; }
+#demo.start .hf-note { display: none; color: var(--accent); }
+#demo.start[data-on-hf=true] .hf-note { display: block; }
 #demo.start a.link { color: var(--accent); text-decoration: none; }
 #demo.start a.link:hover { text-decoration: underline; }
 #demo.start dialog { background: var(--panel); color: var(--text); border: 1px solid var(--accent); padding: 22px 26px; max-width: 520px; line-height: 1.5; }

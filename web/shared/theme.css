@@ -1,8 +1,14 @@
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-style: normal; font-display: swap; src: url(/web/shared/fonts/DMSans-400.ttf) format('truetype'); }
+@font-face { font-family: 'DM Sans'; font-weight: 600; font-style: normal; font-display: swap; src: url(/web/shared/fonts/DMSans-600.ttf) format('truetype'); }
+@font-face { font-family: 'DM Sans'; font-weight: 700; font-style: normal; font-display: swap; src: url(/web/shared/fonts/DMSans-700.ttf) format('truetype'); }
 /* The look of the page: black, gray and orange. Change the variables to change the page; the canvases read them too. */
 /* Gradio's own page: the page colour, and no "Use via API / Built with Gradio / Settings" line at the bottom */
 body, .gradio-container, .main, .wrap, .block, .html-container { background: #141414 !important; }
 footer { display: none !important; }
 body { margin: 0; }
+/* On a tall screen the demo sits in the middle, not at the top */
+.gradio-container, .gradio-container .main, .gradio-container .fillable { min-height: 100vh; }
+.gradio-container .main, .gradio-container .main > .wrap, .gradio-container .main > .wrap > .contain { display: flex; flex-direction: column; justify-content: center; }
 .gradio-container .main, .gradio-container .fillable { padding: 0 !important; }      /* no margins around the demo: it fits a 1080p screen better */
 .gradio-container .prose, .gradio-container .html-container { padding: 0 !important; margin: 0 !important; }
 .gradio-container .gap, .gradio-container .column { gap: 0 !important; }
@@ -22,7 +28,7 @@ body { margin: 0; }
   --knob-track: #3a3a3a;    /* the ring of a knob */
   --log-bg: #000;           /* the log of the model panel */
   --log-text: #fff;
-  --font: sans-serif;
+  --font: 'DM Sans', sans-serif;
 
   --canvas: 480px;          /* the square inside a block: set from CANVAS in theme.js */
   --frame-w: calc(var(--canvas) + 16px);   /* a block */
