@@ -8,7 +8,19 @@ import torch
 import studio.scapes_path  # noqa: F401  (before SCAPES)
 from SCAPES.inference.FlowInference import FlowInference
 
+from studio.gpu import on_gpu
 from studio.live.engine import RealtimeEngine
+
+
+# the model is loaded and run inside a GPU call (studio/gpu.py): on ZeroGPU the GPU exists only inside one, and the render runs in a job thread
+@on_gpu
+def _hop_on_gpu(generator, name):
+    return generator._hop(name)
+
+
+@on_gpu
+def _render_on_gpu(generator, name, rows, nfe, cfg, seed, progress):
+    return generator._render(name, rows, nfe, cfg, seed, progress)
 
 
 class Generator:
@@ -32,11 +44,17 @@ class Generator:
 
     # the seconds of audio per step of the path (what a row of the path lasts); this loads the model
     def hop_s(self, name):
+        return _hop_on_gpu(self, name)
+
+    def _hop(self, name):
         return self._load(name)[1].hop_s
 
     # embeddings [n, d] -> (samples [n, channels] float32, sample rate). progress(done, total) is called after every step.
-    @torch.no_grad()
     def render(self, name, rows, nfe, cfg, seed, progress=lambda done, total: None):
+        return _render_on_gpu(self, name, rows, nfe, cfg, seed, progress)
+
+    @torch.no_grad()
+    def _render(self, name, rows, nfe, cfg, seed, progress):
         inference, engine = self._load(name)
         torch.manual_seed(int(seed))
         np.random.seed(int(seed) % (2 ** 32))

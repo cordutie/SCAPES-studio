@@ -14,6 +14,9 @@ ON_HUGGING_FACE = bool(os.environ.get("SPACE_ID"))
 HOST = "0.0.0.0" if ON_HUGGING_FACE else "127.0.0.1"
 PORT = int(os.environ.get("PORT", 7860))
 
+# on ZeroGPU, how long one call that uses the GPU may take (a Score render of a long piece is the longest)
+GPU_SECONDS = 600
+
 # the Hugging Face repository with the models (the same folders as models/); the app downloads from it on a Space, or with --fetch
 MODELS_REPO = "cordutie/SCAPES-models"
 GITHUB_URL = "https://github.com/cordutie/SCAPES-studio"
