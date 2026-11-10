@@ -196,7 +196,7 @@ try:
         ib = pg.locator("[data-block=interpolation] canvas").bounding_box()
         U = lambda x, y: (ib["x"] + ib["width"] * (48 + x * (790 - 96)) / 790, ib["y"] + ib["height"] * (790 - 48 - y * (790 - 96)) / 790)
         cv = lambda: S("S.clips.find(c => c.id === S.interp).curve")
-        check(cv() == [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]], "it starts with the default dots (0,0) (0.2,0.4) (0.5,0.5) (0.8,0.6) (1,1)")
+        check(cv() == [[0, 0], [0.2, 0.3], [0.5, 0.5], [0.8, 0.7], [1, 1]], "it starts with the default dots (0,0) (0.2,0.3) (0.5,0.5) (0.8,0.7) (1,1)")
         pg.mouse.dblclick(*U(0.35, 0.9)); pg.wait_for_timeout(200)
         check(len(cv()) == 6 and [round(p[0], 2) for p in cv()][2] == 0.35, "a double-click on an empty place adds a dot")
         pg.mouse.move(*U(0.5, 0.5)); pg.mouse.down(); pg.mouse.move(*U(0.55, 0.8), steps=5); pg.mouse.up(); pg.wait_for_timeout(200)
@@ -208,7 +208,7 @@ try:
         check(len(cv()) == 5, "a double-click on a dot removes it")
         check("custom" in pg.locator(".interp").first.get_attribute("class"), "a changed curve marks its symbol")
         pg.locator("[data-block=interpolation] button", has_text="Default").click(); pg.wait_for_timeout(200)
-        check(cv() == [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]] and "custom" not in pg.locator(".interp").first.get_attribute("class"), "Default puts the dots back")
+        check(cv() == [[0, 0], [0.2, 0.3], [0.5, 0.5], [0.8, 0.7], [1, 1]] and "custom" not in pg.locator(".interp").first.get_attribute("class"), "Default puts the dots back")
         pg.mouse.dblclick(*U(0.35, 0.9)); pg.wait_for_timeout(200)              # leave a custom curve for the generation below
         pg.locator("[data-block=interpolation] [data-ref=back]").click(); pg.wait_for_timeout(200)
         check(pg.locator("[data-block=playground]").is_visible() and not pg.locator("[data-block=interpolation]").is_visible(), "Back returns to the playground")

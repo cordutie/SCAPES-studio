@@ -10,7 +10,7 @@ of the last one.
 import numpy as np
 
 MAX_CLIPS, MAX_SECONDS, MIN_CLIP_SECONDS = 200, 600.0, 0.1
-DEFAULT_CURVE = [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]]      # the same as web/score/core/curve.js
+DEFAULT_CURVE = [[0, 0], [0.2, 0.3], [0.5, 0.5], [0.8, 0.7], [1, 1]]      # the same as web/score/core/curve.js
 MAX_CURVE_POINTS = 12
 
 

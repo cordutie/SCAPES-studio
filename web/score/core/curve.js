@@ -1,7 +1,7 @@
 // The speed of an interpolation: a curve through some dots of the unit square, x = time (0 .. 1 across the gap between two clips),
 // y = position (0 = the first clip, 1 = the next one). The curve is the Lagrange polynomial through the dots. The server does the same
 // sum (studio/score/path.py); what it uses is the value limited to [0, 1].
-export const DEFAULT_CURVE = [[0, 0], [0.2, 0.4], [0.5, 0.5], [0.8, 0.6], [1, 1]];     // a cubic shifted to be centred at (0.5, 0.5)
+export const DEFAULT_CURVE = [[0, 0], [0.2, 0.3], [0.5, 0.5], [0.8, 0.7], [1, 1]];     // a cubic shifted to be centred at (0.5, 0.5)
 export const MAX_POINTS = 12, MIN_DX = 0.02;                                            // dots at least this far apart in x
 
 export const copy = (pts) => pts.map((p) => p.slice());

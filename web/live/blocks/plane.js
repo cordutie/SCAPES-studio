@@ -19,7 +19,7 @@ export function mount(root, ctx) {
   root.innerHTML = header('Semantic playground') + `<canvas data-ref="canvas" width="${ctx.size}" height="${ctx.size}"></canvas>`;
   const tools = ref(root, 'tools');
   tools.innerHTML = `<button data-ref="edit" title="move the dots instead of controlling the sound (hold Ctrl for the same, while held)">Edit</button>
-    <button data-ref="glide" title="a click glides to the point instead of jumping">Glide</button>`;
+    <button data-ref="glide" class="on" title="a click glides to the point instead of jumping">Glide</button>`;
   tools.append(createKnob({map: linear(0, 60), value: S.glideT, def: S.glideT, step: 0.5, size: 26, inline: true, label: 'Glide time',
     format: (v) => v.toFixed(1) + ' s', onChange: (v) => { S.glideT = v; }}).el);
   const pc = ref(root, 'canvas');

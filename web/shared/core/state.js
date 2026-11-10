@@ -14,7 +14,7 @@ export const S = {
   lastLive: null,     // the last answer of the live call
   needLocate: false,  // true when the control point moved since the last call: the server recomputes the selection
   draggingDot: false, // a dot is being dragged: the control point follows the gesture, not the server
-  glide: false, glideT: 10, prior: false, hz: 10, nreq: 0,   // glide seconds, prior ticks per second
+  glide: true, glideT: 10, prior: false, hz: 10, nreq: 0,   // glide seconds, prior ticks per second
   editDots: false,    // the semantic playground: true = a press moves dots, false = a press controls the sound (see blocks/plane.js)
 };
 

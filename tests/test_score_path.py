@@ -44,7 +44,7 @@ def test_the_curve_sets_the_speed_of_the_interpolation():
     pts = read_curve(None)
     assert pts == [tuple(map(float, p)) for p in DEFAULT_CURVE]
     assert curve_position(pts, 0.0) == 0 and curve_position(pts, 1.0) == 1 and curve_position(pts, 0.5) == pytest.approx(0.5)
-    assert curve_position(pts, 0.2) == pytest.approx(0.4)                          # it goes through its dots
+    assert curve_position(pts, 0.2) == pytest.approx(0.3)                          # it goes through its dots
     assert 0 <= min(curve_position(pts, x / 50) for x in range(51)) and max(curve_position(pts, x / 50) for x in range(51)) <= 1
     slow = [[0, 0], [0.5, 0.1], [1, 1]]                                               # lingers on the first clip
     a = [clip(0, 2, (0, 1)), dict(clip(4, 2, (1, 1)))]
