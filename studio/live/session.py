@@ -19,7 +19,8 @@ class Session:
         model_dir = Path(model_dir)
         if not (model_dir / "atlas.npz").exists():
             raise FileNotFoundError(f"{model_dir / 'atlas.npz'} is missing: Live needs a model trained with GUI = True")
-        device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        # on a Hugging Face Space (ZeroGPU) the GPU exists only inside a @spaces.GPU call, so the model stays on the CPU there
+        device = device or ("cuda" if torch.cuda.is_available() and not config.ON_HUGGING_FACE else "cpu")
         self.path, self.name = model_dir, name or model_dir.name
         self.inference = FlowInference(model_dir, device=device, checkpoint=checkpoint)
         self.atlas = AtlasModel(self.inference.atlas)
