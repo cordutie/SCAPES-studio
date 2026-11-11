@@ -4,7 +4,7 @@
 --extra-index-url https://download.pytorch.org/whl/cu128
 torch==2.10.0+cu128
 torchaudio==2.10.0+cu128
-scapes[atlas] @ git+https://github.com/cordutie/SCAPES@v0.2.0
+scapes[atlas] @ git+https://github.com/cordutie/SCAPES@v0.3.0
 audio-codec-wrappers @ git+https://github.com/cordutie/audio_codec_wrappers@4a4db83
 torchdiffeq==0.2.5
 numpy>=2.0,<2.5
