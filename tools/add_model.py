@@ -3,7 +3,7 @@ the validation audio or the dataset) and the snippets of the representatives of 
 the prior if it was saved without them (a model trained before dataprep wrote them), learning both from the CLAP embeddings that are
 still in the build folder.
 
-    python tools/add_model.py <build>/models/<size>_mem<ms> [--name NAME]
+    python tools/add_model.py <build>/models/<size>_<ms>ms [--name NAME]
 
 The name defaults to <build folder>_<model folder>. The trained model is not changed."""
 import argparse

@@ -49,7 +49,7 @@ The project was written for Python 3.12; Python 3.14 also installed and ran on a
 
 A model is a folder of `models/` (gitignored), the same shape as a folder of the Hugging Face repository:
 `<name>/checkpoints/inference.gin`, `best_*.pt` (or `last_*.pt`), `latent_stats.pt`, and `<name>/atlas.npz` (the atlas that dataprep makes
-with `GUI = True`). Make one from a trained model with `python tools/add_model.py <build>/models/<size>_mem<ms>`.
+with `GUI = True`). Make them from a trained build folder with the GUI packer of SCAPES (`pack_for_gui(build_path, zip=False)` in the simplified tutorial, or `SCAPES.packer.gui_packer`), or one model with `python tools/add_model.py <build>/models/<size>_<ms>ms`.
 A model can also have `<name>/snippets/` (`000.mp3`, `001.mp3`, …: the audio of the representatives that its atlas lists, for Score mode; Live
 does not use them). The atlas can have up to 60 clusters; the cluster panel of Live scrolls.
 The Live page has a menu to switch models; the last one used starts next time.
